@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe build active file",
+            "command": "C:/MinGW/bin/g++.exe",
+			// "command": "C:/mingw64/bin/g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                // ganti inclue (i) dan library(l) sesuai dengan lokasi kalian download freeglutnya
+                "-I", "C:/Users/kevin/Documents/freeglut/include",
+                "-L", "C:/Users/kevin/Documents/freeglut/bin/x64", 
+                "-lfreeglut",
+                "-lopengl32",
+                "-lglu32",
+                "-lgdi32",
+                "-lwinmm"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Task untuk compile OpenGL FreeGLUT"
+        }
+    ]
+}
