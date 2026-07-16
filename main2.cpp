@@ -475,6 +475,29 @@ int main(int argc, char** argv) {
                { 0.0f, 0.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
     
+    //WC
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WC.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Step.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leatherRed.png",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Toilet.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\ToiletTile.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\ToiletTile.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
