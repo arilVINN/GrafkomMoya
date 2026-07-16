@@ -576,6 +576,65 @@ int main(int argc, char** argv) {
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\CofeeMicrowave.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 11.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\CofeeBlenderBawah.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\CofeeBlenderAtas.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\CofeeBlenderBawah.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 4.5f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\CofeeBlenderAtas.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 4.5f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+               
+    //Furnitur Ruang Kasir
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\KursiKayuKasir.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaBesiKasir.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SofaKasir.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\KursiKotakBaseKasir.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\KursiKotakPillowKasir.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaKayuKotakKasir.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
 
 
     //Pintu Luar
@@ -669,6 +728,20 @@ int main(int argc, char** argv) {
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
 
+    //Furnitur
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\KursiLuar.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaBundarLuar.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+
+
     //floor
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorOpenArea.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
@@ -680,6 +753,11 @@ int main(int argc, char** argv) {
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorKrikil.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\AtapAncur.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
 
 
     glutDisplayFunc(display);
@@ -687,7 +765,7 @@ int main(int argc, char** argv) {
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
     glutMouseWheelFunc(mouseWheel);
-    glutKeyboardFunc(keyboard); // Mendaftarkan fungsi pergerakan keyboard WASD
+    glutKeyboardFunc(keyboard);
 
     glutMainLoop();
     return 0;
