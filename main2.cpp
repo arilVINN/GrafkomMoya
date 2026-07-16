@@ -432,6 +432,44 @@ int main(int argc, char** argv) {
                { 0.0f, -90.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
 
+
+    //Room2
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallRoom2.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\DoorCurtains.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\curtain.jpg",
+               { 10.0f, 0.0f, -10.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WindowsPlane.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\OldWindows.jpg",
+               { 10.0f, 0.0f, -12.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 18.0f, 0.0f, -40.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.2f, 1.2f, 1.2f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 2.0f, 0.0f, -40.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.2f, 1.2f, 1.2f });
+        
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 18.0f, 0.0f, -30.0f },
+               { 0.0f, 180.0f, 0.0f });
+    
+
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
