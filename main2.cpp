@@ -319,9 +319,9 @@ int main(int argc, char** argv) {
 
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\FloorIndoorRoom.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\FloorTiles.png",
-               { 14.0f, 0.0f, 0.0f },
+               { 10.0f, 0.0f, 0.0f },
             { 0.0f, 0.0f, 0.0f },
-            { 2.0f, 2.0f, 2.0f });
+            { 1.8f, 1.8f, 1.8f });
 
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\sofa3.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\fabric.jpg");
@@ -347,6 +347,12 @@ int main(int argc, char** argv) {
                "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\wood.jpg",
                { 16.0f, 0.0f, -5.0f },
                { 0.0f, 0.0f, 0.0f },
+               { 1.2f, 1.2f, 1.2f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Drawer.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leather.jpg",
+               { 12.0f, 0.0f, -14.0f },
+               { 0.0f, -90.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
 
     glutDisplayFunc(display);
