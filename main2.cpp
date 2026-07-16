@@ -174,7 +174,7 @@ public:
 std::vector<TexturedGameObject> sceneObjects;
 
 // ============================================================
-// SISTEM KAMERA BLENDER (SMOOTH ORBIT & RELATIVE PAN)
+// SISTEM KAMERA BLENDER (ORBIT, PAN, & WASD NAVIGATION)
 // ============================================================
 float camAngleX = 25.0f;
 float camAngleY = -45.0f;
@@ -182,7 +182,7 @@ float camDist = 18.0f;
 
 float targetX = 0.0f;
 float targetY = 0.0f;
-float targetZ = 7.0f; // Diset di tengah area scene (antara Z=0 hingga Z=14)
+float targetZ = 7.0f; 
 
 const float minCamDist = 1.0f;
 const float maxCamDist = 100.0f;
@@ -248,7 +248,7 @@ void motion(int x, int y) {
     int deltaX = x - lastMouseX;
     int deltaY = y - lastMouseY;
 
-    // Klik Kiri + Drag: Memutar Kamera Mengelilingi Pivot Point
+    // Klik Kiri + Drag: Orbit Kamera
     if (isRotateDragging) {
         camAngleY += deltaX * 0.5f;
         camAngleX += deltaY * 0.5f;
@@ -258,13 +258,12 @@ void motion(int x, int y) {
 
         glutPostRedisplay();
     }
-    // Klik Kanan + Drag: Pan Kamera Relatif terhadap Rotasi Kamera
+    // Klik Kanan + Drag: Pan Kamera (Relatif terhadap sudut rotasi)
     else if (isPanDragging) {
         float panSpeed = 0.003f * camDist;
 
         float radY = camAngleY * 3.14159265f / 180.0f;
 
-        // Vektor arah kanan relatif terhadap rotasi horizontal kamera
         float rightX = cos(radY);
         float rightZ = sin(radY);
 
@@ -289,6 +288,48 @@ void mouseWheel(int wheel, int direction, int x, int y) {
         if (camDist > maxCamDist) camDist = maxCamDist;
     }
     
+    glutPostRedisplay();
+}
+
+// ============================================================
+// PERGERAKAN KAMERA WASD (KEYBOARD)
+// ============================================================
+void keyboard(unsigned char key, int x, int y) {
+    float moveSpeed = 0.8f; // Kecepatan gerak kamera
+    float radY = camAngleY * 3.14159265f / 180.0f;
+
+    // Vektor arah Maju (Forward) & Kanan (Right) relatif terhadap sudut rotasi kamera
+    float forwardX = sin(radY);
+    float forwardZ = -cos(radY);
+
+    float rightX = cos(radY);
+    float rightZ = sin(radY);
+
+    switch (tolower(key)) {
+    case 'w': // Maju
+        targetX += forwardX * moveSpeed;
+        targetZ += forwardZ * moveSpeed;
+        break;
+    case 's': // Mundur
+        targetX -= forwardX * moveSpeed;
+        targetZ -= forwardZ * moveSpeed;
+        break;
+    case 'a': // Geser Kiri (Strafe Left)
+        targetX -= rightX * moveSpeed;
+        targetZ -= rightZ * moveSpeed;
+        break;
+    case 'd': // Geser Kanan (Strafe Right)
+        targetX += rightX * moveSpeed;
+        targetZ += rightZ * moveSpeed;
+        break;
+    case 'e': // Naik Vertikal (Atas)
+        targetY += moveSpeed;
+        break;
+    case 'q': // Turun Vertikal (Bawah)
+        targetY -= moveSpeed;
+        break;
+    }
+
     glutPostRedisplay();
 }
 
@@ -319,9 +360,9 @@ int main(int argc, char** argv) {
 
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorIndoorRoom.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\FloorTiles.png",
-                { 10.0f, 0.0f, 2.0f },
-                { 0.0f, 0.0f, 0.0f },
-                { 1.8f, 1.9f, 1.8f });
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.9f, 1.8f });
 
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap1.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
@@ -331,6 +372,18 @@ int main(int argc, char** argv) {
 
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap2.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\DoorCurtains.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\curtain.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WindowsPlane.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\OldWindows.jpg",
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
@@ -346,7 +399,6 @@ int main(int argc, char** argv) {
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
-    
 
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg");
@@ -385,6 +437,7 @@ int main(int argc, char** argv) {
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
     glutMouseWheelFunc(mouseWheel);
+    glutKeyboardFunc(keyboard); // Mendaftarkan fungsi pergerakan keyboard WASD
 
     glutMainLoop();
     return 0;
