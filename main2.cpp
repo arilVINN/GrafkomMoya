@@ -586,6 +586,20 @@ int main(int argc, char** argv) {
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
 
+    //Floor Launge
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorLaunge.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leather.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    //wall
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallLaunge.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
     //FloorLuar
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorLuarHitam.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\.jpg",
@@ -607,7 +621,7 @@ int main(int argc, char** argv) {
 
     //atap
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Atap.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.png",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
