@@ -39,6 +39,7 @@ public:
     Vector3 position = { 0.0f, 0.0f, 0.0f };
     Vector3 rotation = { 0.0f, 0.0f, 0.0f };
     Vector3 scale    = { 1.0f, 1.0f, 1.0f };
+    float alpha      = 1.0f;
 
     bool loadTexture(const char* imagePath) {
         int width, height, nrChannels;
@@ -132,13 +133,19 @@ public:
         glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
         glScalef(scale.x, scale.y, scale.z);
 
+        if (alpha < 1.0f) {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glDepthMask(GL_FALSE); // Mencegah kaca menutupi objek di belakangnya
+        }
+
         if (textureID != 0) {
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, textureID);
-            glColor3f(1.0f, 1.0f, 1.0f);
+            glColor4f(1.0f, 1.0f, 1.0f, alpha);
         } else {
             glDisable(GL_TEXTURE_2D);
-            glColor3f(0.8f, 0.8f, 0.8f);
+            glColor4f(0.8f, 0.8f, 0.8f, alpha);
         }
 
         for (const auto& face : faces) {
@@ -165,6 +172,11 @@ public:
 
         if (textureID != 0) {
             glDisable(GL_TEXTURE_2D);
+        }
+
+        if (alpha < 1.0f) {
+            glDisable(GL_BLEND);
+            glDepthMask(GL_TRUE); // Kembalikan efek depth buffer
         }
 
         glPopMatrix();
@@ -196,6 +208,8 @@ void initGL() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL); // Memastikan glColor bisa mengatur warna material saat ada cahaya
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
     GLfloat lightPos[] = { 10.0f, 20.0f, 10.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -345,7 +359,8 @@ int main(int argc, char** argv) {
                           const std::string& texPath,
                           const Vector3& pos = { 0.0f, 0.0f, 0.0f },
                           const Vector3& rot = { 0.0f, 0.0f, 0.0f },
-                          const Vector3& scale = { 1.0f, 1.0f, 1.0f }) {
+                          const Vector3& scale = { 1.0f, 1.0f, 1.0f },
+                          float alpha = 1.0f) {
         TexturedGameObject obj;
         if (obj.loadOBJ(objPath.c_str())) {
             if (!texPath.empty()) {
@@ -354,6 +369,7 @@ int main(int argc, char** argv) {
             obj.position = pos;
             obj.rotation = rot;
             obj.scale = scale;
+            obj.alpha = alpha;
             sceneObjects.push_back(obj);
         }
     };
@@ -542,7 +558,59 @@ int main(int argc, char** argv) {
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
+    //kaca
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Kaca.obj",
+               "", // Dihilangkan (dikosongkan) agar tidak pakai tekstur solid
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f },
+               0.7f); // Ubah alpha ke 0.3 agar lebih bening (transparan)
+
+    //Pillar
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\PillarLuar.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
     
+    //TembokLuar
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokLuar1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    //Garasi
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Garasi.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    //FloorLuar
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorLuarHitam.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorLuarSemen.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Carpet.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leatherRed.png",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    //atap
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Atap.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.png",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
 
 
     glutDisplayFunc(display);
