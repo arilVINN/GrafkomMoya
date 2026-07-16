@@ -296,7 +296,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(1024, 768);
-    glutCreateWindow("TR Grafika - Precise Blender Camera Control");
+    glutCreateWindow("TR Grafika Komputer | 0-_[Moya Caffe]_-0 |");
 
     initGL();
 
@@ -317,34 +317,59 @@ int main(int argc, char** argv) {
         }
     };
 
-    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\FloorIndoorRoom.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\FloorTiles.png",
-               { 10.0f, 0.0f, 0.0f },
-            { 0.0f, 0.0f, 0.0f },
-            { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorIndoorRoom.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\FloorTiles.png",
+                { 10.0f, 0.0f, 2.0f },
+                { 0.0f, 0.0f, 0.0f },
+                { 1.8f, 1.9f, 1.8f });
 
-    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\sofa3.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\fabric.jpg");
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
 
-    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\MejaKayuKotak.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\wood.jpg",
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap2.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, -33.2f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Painting1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\TexturePainting1.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg");
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaKayuKotak.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
                { 0.0f, 0.0f, 7.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
 
-    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\sofa3.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\fabric.jpg",
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
                { 0.0f, 0.0f, 14.0f },
                { 0.0f, 180.0f, 0.0f });
 
-    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\SetMejaMakanKayuIndoor.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\wood.jpg",
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
                { 16.0f, 0.0f, 7.0f },
                { 0.0f, 180.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
 
-    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\object\\SetMejaMakanKayuIndoor.obj",
-               "C:\\Users\\kevin\\Documents\\Grfk\\TRcoba\\Texture\\wood.jpg",
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
                { 16.0f, 0.0f, -5.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
