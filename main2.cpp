@@ -551,7 +551,33 @@ int main(int argc, char** argv) {
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
+
+    //Meja Kasir
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaKasirBawah.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
     
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaKasirAtas.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\ObjKasirBawah.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leather.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\ObjKasirAtas.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+
     //Pintu Luar
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\PintuLuar.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
@@ -622,6 +648,35 @@ int main(int argc, char** argv) {
     //atap
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Atap.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    //OpenArea
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallOpenArea.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallOpenArea2.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallOpenArea3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    //floor
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorOpenArea.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorTileOpenArea.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
