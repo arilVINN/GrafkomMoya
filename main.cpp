@@ -5,6 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <cmath>
+#include <unordered_map>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -28,41 +29,40 @@ struct Face {
     std::vector<FaceIndex> indices;
 };
 
-// Config pendukung untuk pendaftaran objek yang lebih rapi
 struct ObjectConfig {
     std::string objPath;
     std::string texPath;
-    Vector3 pos = { 0.0f, 0.0f, 0.0f };
-    Vector3 rot = { 0.0f, 0.0f, 0.0f };
+    Vector3 pos   = { 0.0f, 0.0f, 0.0f };
+    Vector3 rot   = { 0.0f, 0.0f, 0.0f };
     Vector3 scale = { 1.0f, 1.0f, 1.0f };
 };
 
 // ============================================================
-// CLASS OBJECT (TexturedGameObject)
+// TEXTURE CACHE MANAGER (Menghindari Redudansi Memori GPU)
 // ============================================================
-class TexturedGameObject {
+class TextureManager {
+private:
+    std::unordered_map<std::string, GLuint> loadedTextures;
+
 public:
-    std::string name;
-    std::vector<Vector3> vertices;
-    std::vector<Vector2> texCoords;
-    std::vector<Vector3> normals;
-    std::vector<Face> faces;
-    GLuint textureID = 0;
-
-    Vector3 position = { 0.0f, 0.0f, 0.0f };
-    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 scale    = { 1.0f, 1.0f, 1.0f };
-
-    bool loadTexture(const char* imagePath) {
-        int width, height, nrChannels;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char* data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-
-        if (!data) {
-            std::cerr << "[Warning] Gagal memuat tekstur: " << imagePath << std::endl;
-            return false;
+    GLuint getTexture(const std::string& path) {
+        if (path.empty()) return 0;
+        
+        // Gunakan tekstur yang sudah di-load sebelumnya jika ada
+        if (loadedTextures.find(path) != loadedTextures.end()) {
+            return loadedTextures[path];
         }
 
+        int width, height, nrChannels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+
+        if (!data) {
+            std::cerr << "[Warning] Gagal memuat tekstur: " << path << std::endl;
+            return 0;
+        }
+
+        GLuint textureID;
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -75,17 +75,44 @@ public:
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
-        return true;
+        loadedTextures[path] = textureID;
+        return textureID;
+    }
+};
+
+TextureManager g_TextureManager;
+
+// ============================================================
+// CLASS OBJECT (Menggunakan Display Lists untuk Performa Tinggi)
+// ============================================================
+class TexturedGameObject {
+public:
+    GLuint displayListID = 0;
+    GLuint textureID = 0;
+
+    Vector3 position = { 0.0f, 0.0f, 0.0f };
+    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 scale    = { 1.0f, 1.0f, 1.0f };
+
+    ~TexturedGameObject() {
+        // Pembersihan memori GPU
+        if (displayListID != 0) {
+            glDeleteLists(displayListID, 1);
+        }
     }
 
-    bool loadOBJ(const char* path) {
-        std::ifstream file(path);
+    bool loadAndCompile(const std::string& objPath, const std::string& texPath) {
+        std::ifstream file(objPath);
         if (!file.is_open()) {
-            std::cerr << "[Error] Gagal membuka file OBJ: " << path << std::endl;
+            std::cerr << "[Error] Gagal membuka file OBJ: " << objPath << std::endl;
             return false;
         }
 
-        vertices.clear(); texCoords.clear(); normals.clear(); faces.clear();
+        std::vector<Vector3> vertices;
+        std::vector<Vector2> texCoords;
+        std::vector<Vector3> normals;
+        std::vector<Face> faces;
+
         std::string line;
         while (std::getline(file, line)) {
             std::stringstream ss(line);
@@ -121,16 +148,13 @@ public:
             }
         }
         file.close();
-        return true;
-    }
 
-    void draw() {
-        glPushMatrix();
-        glTranslatef(position.x, position.y, position.z);
-        glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
-        glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
-        glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
-        glScalef(scale.x, scale.y, scale.z);
+        // Load Tekstur
+        textureID = g_TextureManager.getTexture(texPath);
+
+        // --- KOMPILASI GEOMETRY KE OPENGL DISPLAY LIST (OPTIMASI GPU) ---
+        displayListID = glGenLists(1);
+        glNewList(displayListID, GL_COMPILE);
 
         if (textureID != 0) {
             glEnable(GL_TEXTURE_2D);
@@ -158,6 +182,24 @@ public:
         }
 
         if (textureID != 0) glDisable(GL_TEXTURE_2D);
+
+        glEndList();
+        return true;
+    }
+
+    void draw() const {
+        if (displayListID == 0) return;
+
+        glPushMatrix();
+        glTranslatef(position.x, position.y, position.z);
+        glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+        glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+        glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+        glScalef(scale.x, scale.y, scale.z);
+
+        // Panggil Display List yang sudah terkompilasi
+        glCallList(displayListID);
+
         glPopMatrix();
     }
 };
@@ -168,7 +210,7 @@ public:
 class Room {
 public:
     std::string roomName;
-    Vector3 roomOffset; // Offset lokasi awal untuk seluruh ruangan ini
+    Vector3 roomOffset;
     std::vector<TexturedGameObject> objects;
 
     Room(const std::string& name, Vector3 offset = { 0.0f, 0.0f, 0.0f }) 
@@ -176,11 +218,8 @@ public:
 
     void addObject(const ObjectConfig& config) {
         TexturedGameObject obj;
-        if (obj.loadOBJ(config.objPath.c_str())) {
-            if (!config.texPath.empty()) {
-                obj.loadTexture(config.texPath.c_str());
-            }
-            // Posisi dihitung relatif terhadap offset ruangan
+        if (obj.loadAndCompile(config.objPath, config.texPath)) {
+            // Kalkulasi posisi relatif terhadap offset ruangan
             obj.position = { 
                 config.pos.x + roomOffset.x, 
                 config.pos.y + roomOffset.y, 
@@ -192,8 +231,8 @@ public:
         }
     }
 
-    void draw() {
-        for (auto& obj : objects) {
+    void draw() const {
+        for (const auto& obj : objects) {
             obj.draw();
         }
     }
@@ -207,8 +246,8 @@ public:
         rooms.push_back(room);
     }
 
-    void drawAll() {
-        for (auto& room : rooms) {
+    void drawAll() const {
+        for (const auto& room : rooms) {
             room.draw();
         }
     }
@@ -221,7 +260,7 @@ SceneManager g_Scene;
 // ============================================================
 float camAngleX = 25.0f;
 float camAngleY = -45.0f;
-float camDist = 18.0f;
+float camDist   = 18.0f;
 
 float targetX = 0.0f, targetY = 0.0f, targetZ = 7.0f;
 const float minCamDist = 1.0f, maxCamDist = 100.0f;
@@ -250,7 +289,7 @@ void display() {
     glRotatef(camAngleY, 0.0f, 1.0f, 0.0f);
     glTranslatef(-targetX, -targetY, -targetZ);
 
-    // Render Seluruh Ruangan via Manager
+    // Render Semua Ruangan
     g_Scene.drawAll();
 
     glutSwapBuffers();
@@ -319,14 +358,14 @@ void keyboard(unsigned char key, int x, int y) {
 
     float forwardX = sin(radY);
     float forwardZ = -cos(radY);
-    float rightX = cos(radY);
-    float rightZ = sin(radY);
+    float rightX   = cos(radY);
+    float rightZ   = sin(radY);
 
     switch (tolower(key)) {
     case 'w': targetX += forwardX * moveSpeed; targetZ += forwardZ * moveSpeed; break;
     case 's': targetX -= forwardX * moveSpeed; targetZ -= forwardZ * moveSpeed; break;
-    case 'a': targetX -= rightX * moveSpeed; targetZ -= rightZ * moveSpeed; break;
-    case 'd': targetX += rightX * moveSpeed; targetZ += rightZ * moveSpeed; break;
+    case 'a': targetX -= rightX * moveSpeed;   targetZ -= rightZ * moveSpeed;   break;
+    case 'd': targetX += rightX * moveSpeed;   targetZ += rightZ * moveSpeed;   break;
     case 'e': targetY += moveSpeed; break;
     case 'q': targetY -= moveSpeed; break;
     }
@@ -334,33 +373,57 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 // ============================================================
-// PEMBUATAN STRUKTUR SCENE & RUANGAN
+// PEMBENTUKAN SCENE TERSTRUKTUR
 // ============================================================
 void buildScene() {
-    // 1. STRUKTUR UTAMA / BANGUNAN DINDING & LANTAI
-    Room mainBuilding("Bangunan Utama");
-    mainBuilding.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\FloorIndoorRoom.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/FloorTiles.png", {10,0,2}, {0,0,0}, {1.8f, 1.9f, 1.8f} });
-    mainBuilding.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\TembokMeratap1.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/wall1.jpg", {10,0,2}, {0,0,0}, {1.8f, 1.8f, 1.8f} });
-    mainBuilding.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\TembokMeratap1.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/wall1.jpg", {10,0,-33.2f}, {0,0,0}, {1.8f, 1.8f, 1.8f} });
-    g_Scene.addRoom(mainBuilding);
+    // Definisi Path Relatif Dasar
+    const std::string objDir = "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\";
+    const std::string texDir = "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\";
 
-    // 2. RUANG SANTAI / LOUNGE (Dua Sofa + Meja)
-    Room loungeRoom("Lounge Area");
-    loungeRoom.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\sofa3.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/fabric.jpg", {0, 0, 0} });
-    loungeRoom.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\MejaKayuKotak.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/wood.jpg", {0, 0, 7}, {0, 0, 0}, {1.2f, 1.2f, 1.2f} });
-    loungeRoom.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\sofa3.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/fabric.jpg", {0, 0, 14}, {0, 180, 0} });
-    g_Scene.addRoom(loungeRoom);
+    // 1. RUANGAN UTAMA / MAIN CAFE
+    Room mainRoom("Main Cafe Room");
+    mainRoom.addObject({ objDir + "FloorIndoorRoom.obj",          texDir + "FloorTiles.png",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.9f, 1.8f } });
+    mainRoom.addObject({ objDir + "TembokMeratap1.obj",           texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    mainRoom.addObject({ objDir + "TembokMeratap2.obj",           texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    mainRoom.addObject({ objDir + "DoorCurtains.obj",            texDir + "curtain.jpg",         { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    mainRoom.addObject({ objDir + "WindowsPlane.obj",             texDir + "OldWindows.jpg",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    mainRoom.addObject({ objDir + "TembokMeratap1.obj",           texDir + "wall1.jpg",           { 10.0f, 0.0f, -33.2f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    mainRoom.addObject({ objDir + "Painting1.obj",                texDir + "TexturePainting1.jpg",{ 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    
+    // Mebel Utama
+    mainRoom.addObject({ objDir + "sofa3.obj",                    texDir + "fabric.jpg",          { 0.0f, 0.0f, 0.0f } });
+    mainRoom.addObject({ objDir + "MejaKayuKotak.obj",            texDir + "wood.jpg",            { 0.0f, 0.0f, 7.0f },   { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    mainRoom.addObject({ objDir + "sofa3.obj",                    texDir + "fabric.jpg",          { 0.0f, 0.0f, 14.0f },  { 0.0f, 180.0f, 0.0f } });
+    mainRoom.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",    texDir + "wood.jpg",            { 16.0f, 0.0f, 7.0f },  { 0.0f, 180.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    mainRoom.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",    texDir + "wood.jpg",            { 16.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    mainRoom.addObject({ objDir + "Drawer.obj",                   texDir + "leather.jpg",         { 12.0f, 0.0f, -14.0f },{ 0.0f, -90.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    g_Scene.addRoom(mainRoom);
 
-    // 3. AREA MAKAN (DINING AREA)
-    Room diningRoom("Dining Area", { 16.0f, 0.0f, 0.0f }); // Offset X diset 16.0f
-    diningRoom.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\SetMejaMakanKayuIndoor.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/wood.jpg", {0, 0, 7}, {0, 180, 0}, {1.2f, 1.2f, 1.2f} });
-    diningRoom.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\SetMejaMakanKayuIndoor.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/wood.jpg", {0, 0, -5}, {0, 0, 0}, {1.2f, 1.2f, 1.2f} });
-    g_Scene.addRoom(diningRoom);
+    // 2. RUANGAN KEDUA / ROOM 2
+    Room room2("Room 2");
+    room2.addObject({ objDir + "WallRoom2.obj",              texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    room2.addObject({ objDir + "DoorCurtains.obj",           texDir + "curtain.jpg",         { 10.0f, 0.0f, -10.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    room2.addObject({ objDir + "WindowsPlane.obj",            texDir + "OldWindows.jpg",      { 10.0f, 0.0f, -12.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    room2.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",   texDir + "wood.jpg",            { 18.0f, 0.0f, -40.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    room2.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",   texDir + "wood.jpg",            { 2.0f, 0.0f, -40.0f },  { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    room2.addObject({ objDir + "sofa3.obj",                   texDir + "fabric.jpg",          { 23.0f, 0.0f, -23.0f },{ 0.0f, -90.0f, 0.0f } });
+    room2.addObject({ objDir + "Drawer.obj",                  texDir + "leather.jpg",         { -5.0f, 0.0f, -28.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
+    g_Scene.addRoom(room2);
 
-    // 4. AREA PENYIMPANAN / DRAWER
-    Room storageRoom("Storage Area");
-    storageRoom.addObject({ "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\objects\\Drawer.obj", "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture/leather.jpg", {12, 0, -14}, {0, -90, 0}, {1.2f, 1.2f, 1.2f} });
-    g_Scene.addRoom(storageRoom);
+    // 3. AREA TOILET / WC
+    Room wcRoom("Toilet Area");
+    wcRoom.addObject({ objDir + "WC.obj",                     texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    wcRoom.addObject({ objDir + "Step.obj",                   texDir + "leatherRed.png",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    wcRoom.addObject({ objDir + "Toilet.obj",                 texDir + "white.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    wcRoom.addObject({ objDir + "ToiletTile.obj",             texDir + "ToiletTile.jpg",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    g_Scene.addRoom(wcRoom);
+
+    // 4. AREA KORIDOR / HALLWAY
+    Room hallwayRoom("Hallway Area");
+    hallwayRoom.addObject({ objDir + "WallHall.obj",          texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    hallwayRoom.addObject({ objDir + "WallHallDetail.obj",    texDir + "wood.jpg",            { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    hallwayRoom.addObject({ objDir + "TembokMeratap3.obj",    texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
+    g_Scene.addRoom(hallwayRoom);
 }
 
 int main(int argc, char** argv) {
@@ -370,8 +433,8 @@ int main(int argc, char** argv) {
     glutCreateWindow("TR Grafika Komputer | Moya Caffe |");
 
     initGL();
-    
-    // Panggil pembuat scene
+
+    // Inisialisasi Seluruh Scene & Objek
     buildScene();
 
     glutDisplayFunc(display);
