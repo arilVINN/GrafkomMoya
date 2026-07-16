@@ -466,8 +466,14 @@ int main(int argc, char** argv) {
         
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
-               { 18.0f, 0.0f, -30.0f },
-               { 0.0f, 180.0f, 0.0f });
+               { 23.0f, 0.0f, -23.0f },
+               { 0.0f, -90.0f, 0.0f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Drawer.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leather.jpg",
+               { -5.0f, 0.0f, -28.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.2f, 1.2f, 1.2f });
     
 
     glutDisplayFunc(display);
