@@ -185,7 +185,7 @@ float targetY = 0.0f;
 float targetZ = 7.0f; 
 
 const float minCamDist = 1.0f;
-const float maxCamDist = 100.0f;
+const float maxCamDist = 1000.0f;
 
 int lastMouseX, lastMouseY;
 bool isRotateDragging = false;
@@ -226,7 +226,7 @@ void reshape(int w, int h) {
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, (float)w / (float)h, 0.1, 100.0);
+    gluPerspective(45.0, (float)w / (float)h, 0.1, 1000.0);
     
     glMatrixMode(GL_MODELVIEW);
 }
@@ -516,6 +516,33 @@ int main(int argc, char** argv) {
                { 10.0f, 0.0f, 2.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap4.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap5.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+
+    //doorframe
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\DoorFrame.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    
+    //Pintu Luar
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\PintuLuar.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.8f, 1.8f, 1.8f });
+    
 
 
     glutDisplayFunc(display);

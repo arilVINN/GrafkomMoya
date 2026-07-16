@@ -5,14 +5,10 @@
 #include <sstream>
 #include <fstream>
 #include <cmath>
-#include <unordered_map>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-// ============================================================
-// STRUKTUR DATA DASAR
-// ============================================================
 struct Vector3 {
     float x, y, z;
 };
@@ -22,47 +18,38 @@ struct Vector2 {
 };
 
 struct FaceIndex {
-    int vIdx, vtIdx, vnIdx;
+    int vIdx;
+    int vtIdx;
+    int vnIdx;
 };
 
 struct Face {
     std::vector<FaceIndex> indices;
 };
 
-struct ObjectConfig {
-    std::string objPath;
-    std::string texPath;
-    Vector3 pos   = { 0.0f, 0.0f, 0.0f };
-    Vector3 rot   = { 0.0f, 0.0f, 0.0f };
-    Vector3 scale = { 1.0f, 1.0f, 1.0f };
-};
-
-// ============================================================
-// TEXTURE CACHE MANAGER (Menghindari Redudansi Memori GPU)
-// ============================================================
-class TextureManager {
-private:
-    std::unordered_map<std::string, GLuint> loadedTextures;
-
+class TexturedGameObject {
 public:
-    GLuint getTexture(const std::string& path) {
-        if (path.empty()) return 0;
-        
-        // Gunakan tekstur yang sudah di-load sebelumnya jika ada
-        if (loadedTextures.find(path) != loadedTextures.end()) {
-            return loadedTextures[path];
-        }
+    std::string name;
+    std::vector<Vector3> vertices;
+    std::vector<Vector2> texCoords;
+    std::vector<Vector3> normals;
+    std::vector<Face> faces;
+    GLuint textureID = 0;
 
+    Vector3 position = { 0.0f, 0.0f, 0.0f };
+    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 scale    = { 1.0f, 1.0f, 1.0f };
+
+    bool loadTexture(const char* imagePath) {
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+        unsigned char* data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
 
         if (!data) {
-            std::cerr << "[Warning] Gagal memuat tekstur: " << path << std::endl;
-            return 0;
+            std::cerr << "Gagal memuat tekstur: " << imagePath << std::endl;
+            return false;
         }
 
-        GLuint textureID;
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -75,43 +62,20 @@ public:
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
-        loadedTextures[path] = textureID;
-        return textureID;
-    }
-};
-
-TextureManager g_TextureManager;
-
-// ============================================================
-// CLASS OBJECT (Menggunakan Display Lists untuk Performa Tinggi)
-// ============================================================
-class TexturedGameObject {
-public:
-    GLuint displayListID = 0;
-    GLuint textureID = 0;
-
-    Vector3 position = { 0.0f, 0.0f, 0.0f };
-    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 scale    = { 1.0f, 1.0f, 1.0f };
-
-    ~TexturedGameObject() {
-        // Pembersihan memori GPU
-        if (displayListID != 0) {
-            glDeleteLists(displayListID, 1);
-        }
+        return true;
     }
 
-    bool loadAndCompile(const std::string& objPath, const std::string& texPath) {
-        std::ifstream file(objPath);
+    bool loadOBJ(const char* path) {
+        std::ifstream file(path);
         if (!file.is_open()) {
-            std::cerr << "[Error] Gagal membuka file OBJ: " << objPath << std::endl;
+            std::cerr << "Gagal membuka file OBJ: " << path << std::endl;
             return false;
         }
 
-        std::vector<Vector3> vertices;
-        std::vector<Vector2> texCoords;
-        std::vector<Vector3> normals;
-        std::vector<Face> faces;
+        vertices.clear();
+        texCoords.clear();
+        normals.clear();
+        faces.clear();
 
         std::string line;
         while (std::getline(file, line)) {
@@ -120,20 +84,27 @@ public:
             ss >> type;
 
             if (type == "v") {
-                Vector3 v; ss >> v.x >> v.y >> v.z;
+                Vector3 v;
+                ss >> v.x >> v.y >> v.z;
                 vertices.push_back(v);
-            } else if (type == "vt") {
-                Vector2 vt; ss >> vt.u >> vt.v;
+            }
+            else if (type == "vt") {
+                Vector2 vt;
+                ss >> vt.u >> vt.v;
                 texCoords.push_back(vt);
-            } else if (type == "vn") {
-                Vector3 vn; ss >> vn.x >> vn.y >> vn.z;
+            }
+            else if (type == "vn") {
+                Vector3 vn;
+                ss >> vn.x >> vn.y >> vn.z;
                 normals.push_back(vn);
-            } else if (type == "f") {
+            }
+            else if (type == "f") {
                 Face face;
                 std::string segment;
                 while (ss >> segment) {
                     std::stringstream segmentSS(segment);
                     std::string vStr, vtStr, vnStr;
+
                     std::getline(segmentSS, vStr, '/');
                     std::getline(segmentSS, vtStr, '/');
                     std::getline(segmentSS, vnStr, '/');
@@ -142,19 +113,30 @@ public:
                     idx.vIdx  = !vStr.empty()  ? std::stoi(vStr) - 1  : -1;
                     idx.vtIdx = !vtStr.empty() ? std::stoi(vtStr) - 1 : -1;
                     idx.vnIdx = !vnStr.empty() ? std::stoi(vnStr) - 1 : -1;
+
                     face.indices.push_back(idx);
                 }
                 faces.push_back(face);
             }
         }
         file.close();
+        return true;
+    }
 
-        // Load Tekstur
-        textureID = g_TextureManager.getTexture(texPath);
+    void draw() {
+        glPushMatrix();
 
-        // --- KOMPILASI GEOMETRY KE OPENGL DISPLAY LIST (OPTIMASI GPU) ---
-        displayListID = glGenLists(1);
-        glNewList(displayListID, GL_COMPILE);
+        glTranslatef(position.x, position.y, position.z);
+        glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+        glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+        glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+        glScalef(scale.x, scale.y, scale.z);
+
+        // Setting Kilap/Specular Material
+        GLfloat matSpecular[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+        GLfloat matShininess[] = { 16.0f };
+        glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
 
         if (textureID != 0) {
             glEnable(GL_TEXTURE_2D);
@@ -168,114 +150,80 @@ public:
         for (const auto& face : faces) {
             glBegin(GL_POLYGON);
             for (const auto& idx : face.indices) {
-                if (idx.vnIdx >= 0 && idx.vnIdx < (int)normals.size()) {
-                    glNormal3f(normals[idx.vnIdx].x, normals[idx.vnIdx].y, normals[idx.vnIdx].z);
+
+                if (idx.vnIdx >= 0 && idx.vnIdx < normals.size()) {
+                    Vector3 vn = normals[idx.vnIdx];
+                    glNormal3f(vn.x, vn.y, vn.z);
                 }
-                if (idx.vtIdx >= 0 && idx.vtIdx < (int)texCoords.size()) {
-                    glTexCoord2f(texCoords[idx.vtIdx].u, texCoords[idx.vtIdx].v);
+
+                if (idx.vtIdx >= 0 && idx.vtIdx < texCoords.size()) {
+                    Vector2 vt = texCoords[idx.vtIdx];
+                    glTexCoord2f(vt.u, vt.v);
                 }
-                if (idx.vIdx >= 0 && idx.vIdx < (int)vertices.size()) {
-                    glVertex3f(vertices[idx.vIdx].x, vertices[idx.vIdx].y, vertices[idx.vIdx].z);
+
+                if (idx.vIdx >= 0 && idx.vIdx < vertices.size()) {
+                    Vector3 v = vertices[idx.vIdx];
+                    glVertex3f(v.x, v.y, v.z);
                 }
             }
             glEnd();
         }
 
-        if (textureID != 0) glDisable(GL_TEXTURE_2D);
-
-        glEndList();
-        return true;
-    }
-
-    void draw() const {
-        if (displayListID == 0) return;
-
-        glPushMatrix();
-        glTranslatef(position.x, position.y, position.z);
-        glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
-        glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
-        glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
-        glScalef(scale.x, scale.y, scale.z);
-
-        // Panggil Display List yang sudah terkompilasi
-        glCallList(displayListID);
+        if (textureID != 0) {
+            glDisable(GL_TEXTURE_2D);
+        }
 
         glPopMatrix();
     }
 };
 
-// ============================================================
-// ARSITEKTUR RUANGAN (ROOM & SCENE MANAGER)
-// ============================================================
-class Room {
-public:
-    std::string roomName;
-    Vector3 roomOffset;
-    std::vector<TexturedGameObject> objects;
+std::vector<TexturedGameObject> sceneObjects;
 
-    Room(const std::string& name, Vector3 offset = { 0.0f, 0.0f, 0.0f }) 
-        : roomName(name), roomOffset(offset) {}
-
-    void addObject(const ObjectConfig& config) {
-        TexturedGameObject obj;
-        if (obj.loadAndCompile(config.objPath, config.texPath)) {
-            // Kalkulasi posisi relatif terhadap offset ruangan
-            obj.position = { 
-                config.pos.x + roomOffset.x, 
-                config.pos.y + roomOffset.y, 
-                config.pos.z + roomOffset.z 
-            };
-            obj.rotation = config.rot;
-            obj.scale = config.scale;
-            objects.push_back(obj);
-        }
-    }
-
-    void draw() const {
-        for (const auto& obj : objects) {
-            obj.draw();
-        }
-    }
-};
-
-class SceneManager {
-public:
-    std::vector<Room> rooms;
-
-    void addRoom(const Room& room) {
-        rooms.push_back(room);
-    }
-
-    void drawAll() const {
-        for (const auto& room : rooms) {
-            room.draw();
-        }
-    }
-};
-
-SceneManager g_Scene;
-
-// ============================================================
-// KONTROL KAMERA & MOUSE
-// ============================================================
+// SISTEM KAMERA BLENDER
 float camAngleX = 25.0f;
 float camAngleY = -45.0f;
-float camDist   = 18.0f;
+float camDist = 18.0f;
 
-float targetX = 0.0f, targetY = 0.0f, targetZ = 7.0f;
-const float minCamDist = 1.0f, maxCamDist = 100.0f;
+float targetX = 0.0f;
+float targetY = 0.0f;
+float targetZ = 7.0f; 
+
+const float minCamDist = 1.0f;
+const float maxCamDist = 1000.0f;
 
 int lastMouseX, lastMouseY;
-bool isRotateDragging = false, isPanDragging = false;
+bool isRotateDragging = false;
+bool isPanDragging = false;
 
 void initGL() {
     glClearColor(0.12f, 0.12f, 0.15f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+
+    // Enable normal normalization for glScalef
+    glEnable(GL_NORMALIZE);
+
+    // Lighting Configuration
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    GLfloat lightPos[] = { 10.0f, 20.0f, 10.0f, 1.0f };
+    GLfloat lightPos[]      = { 10.0f, 25.0f, 10.0f, 1.0f };
+    GLfloat lightAmbient[]  = { 0.3f, 0.3f, 0.35f, 1.0f };
+    GLfloat lightDiffuse[]  = { 0.9f, 0.85f, 0.8f, 1.0f };
+    GLfloat lightSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+
+    GLfloat globalAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+    // Blending texture with light
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 void display() {
@@ -283,14 +231,20 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Transformasi Kamera
+    // KAMERA VIEW MATRIX
     glTranslatef(0.0f, 0.0f, -camDist);
     glRotatef(camAngleX, 1.0f, 0.0f, 0.0f);
     glRotatef(camAngleY, 0.0f, 1.0f, 0.0f);
     glTranslatef(-targetX, -targetY, -targetZ);
 
-    // Render Semua Ruangan
-    g_Scene.drawAll();
+    // UPDATE POSISI LIGHTING (Jika ingin lampu ikut diam di world space)
+    GLfloat lightPos[] = { 10.0f, 25.0f, 10.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+    // RENDER OBJEK
+    for (auto& obj : sceneObjects) {
+        obj.draw();
+    }
 
     glutSwapBuffers();
 }
@@ -301,18 +255,22 @@ void reshape(int w, int h) {
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, (float)w / (float)h, 0.1, 100.0);
+    gluPerspective(45.0, (float)w / (float)h, 0.1, 1000.0);
+    
     glMatrixMode(GL_MODELVIEW);
 }
 
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         isRotateDragging = (state == GLUT_DOWN);
-    } else if (button == GLUT_RIGHT_BUTTON) {
-        isPanDragging = (state == GLUT_DOWN);
+        lastMouseX = x;
+        lastMouseY = y;
     }
-    lastMouseX = x;
-    lastMouseY = y;
+    else if (button == GLUT_RIGHT_BUTTON) {
+        isPanDragging = (state == GLUT_DOWN);
+        lastMouseX = x;
+        lastMouseY = y;
+    }
 }
 
 void motion(int x, int y) {
@@ -322,10 +280,13 @@ void motion(int x, int y) {
     if (isRotateDragging) {
         camAngleY += deltaX * 0.5f;
         camAngleX += deltaY * 0.5f;
+
         if (camAngleX > 89.0f) camAngleX = 89.0f;
         if (camAngleX < -89.0f) camAngleX = -89.0f;
+
         glutPostRedisplay();
-    } else if (isPanDragging) {
+    }
+    else if (isPanDragging) {
         float panSpeed = 0.003f * camDist;
         float radY = camAngleY * 3.14159265f / 180.0f;
 
@@ -335,20 +296,24 @@ void motion(int x, int y) {
         targetX -= (deltaX * rightX) * panSpeed;
         targetZ -= (deltaX * rightZ) * panSpeed;
         targetY += deltaY * panSpeed;
+
         glutPostRedisplay();
     }
 
-    lastMouseX = x; lastMouseY = y;
+    lastMouseX = x;
+    lastMouseY = y;
 }
 
 void mouseWheel(int wheel, int direction, int x, int y) {
     if (direction > 0) {
         camDist -= 1.5f;
         if (camDist < minCamDist) camDist = minCamDist;
-    } else {
+    } 
+    else {
         camDist += 1.5f;
         if (camDist > maxCamDist) camDist = maxCamDist;
     }
+    
     glutPostRedisplay();
 }
 
@@ -358,84 +323,190 @@ void keyboard(unsigned char key, int x, int y) {
 
     float forwardX = sin(radY);
     float forwardZ = -cos(radY);
-    float rightX   = cos(radY);
-    float rightZ   = sin(radY);
+
+    float rightX = cos(radY);
+    float rightZ = sin(radY);
 
     switch (tolower(key)) {
-    case 'w': targetX += forwardX * moveSpeed; targetZ += forwardZ * moveSpeed; break;
-    case 's': targetX -= forwardX * moveSpeed; targetZ -= forwardZ * moveSpeed; break;
-    case 'a': targetX -= rightX * moveSpeed;   targetZ -= rightZ * moveSpeed;   break;
-    case 'd': targetX += rightX * moveSpeed;   targetZ += rightZ * moveSpeed;   break;
-    case 'e': targetY += moveSpeed; break;
-    case 'q': targetY -= moveSpeed; break;
+    case 'w':
+        targetX += forwardX * moveSpeed;
+        targetZ += forwardZ * moveSpeed;
+        break;
+    case 's':
+        targetX -= forwardX * moveSpeed;
+        targetZ -= forwardZ * moveSpeed;
+        break;
+    case 'a':
+        targetX -= rightX * moveSpeed;
+        targetZ -= rightZ * moveSpeed;
+        break;
+    case 'd':
+        targetX += rightX * moveSpeed;
+        targetZ += rightZ * moveSpeed;
+        break;
+    case 'e':
+        targetY += moveSpeed;
+        break;
+    case 'q':
+        targetY -= moveSpeed;
+        break;
     }
+
     glutPostRedisplay();
-}
-
-// ============================================================
-// PEMBENTUKAN SCENE TERSTRUKTUR
-// ============================================================
-void buildScene() {
-    // Definisi Path Relatif Dasar
-    const std::string objDir = "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\";
-    const std::string texDir = "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\";
-
-    // 1. RUANGAN UTAMA / MAIN CAFE
-    Room mainRoom("Main Cafe Room");
-    mainRoom.addObject({ objDir + "FloorIndoorRoom.obj",          texDir + "FloorTiles.png",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.9f, 1.8f } });
-    mainRoom.addObject({ objDir + "TembokMeratap1.obj",           texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    mainRoom.addObject({ objDir + "TembokMeratap2.obj",           texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    mainRoom.addObject({ objDir + "DoorCurtains.obj",            texDir + "curtain.jpg",         { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    mainRoom.addObject({ objDir + "WindowsPlane.obj",             texDir + "OldWindows.jpg",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    mainRoom.addObject({ objDir + "TembokMeratap1.obj",           texDir + "wall1.jpg",           { 10.0f, 0.0f, -33.2f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    mainRoom.addObject({ objDir + "Painting1.obj",                texDir + "TexturePainting1.jpg",{ 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    
-    // Mebel Utama
-    mainRoom.addObject({ objDir + "sofa3.obj",                    texDir + "fabric.jpg",          { 0.0f, 0.0f, 0.0f } });
-    mainRoom.addObject({ objDir + "MejaKayuKotak.obj",            texDir + "wood.jpg",            { 0.0f, 0.0f, 7.0f },   { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    mainRoom.addObject({ objDir + "sofa3.obj",                    texDir + "fabric.jpg",          { 0.0f, 0.0f, 14.0f },  { 0.0f, 180.0f, 0.0f } });
-    mainRoom.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",    texDir + "wood.jpg",            { 16.0f, 0.0f, 7.0f },  { 0.0f, 180.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    mainRoom.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",    texDir + "wood.jpg",            { 16.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    mainRoom.addObject({ objDir + "Drawer.obj",                   texDir + "leather.jpg",         { 12.0f, 0.0f, -14.0f },{ 0.0f, -90.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    g_Scene.addRoom(mainRoom);
-
-    // 2. RUANGAN KEDUA / ROOM 2
-    Room room2("Room 2");
-    room2.addObject({ objDir + "WallRoom2.obj",              texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    room2.addObject({ objDir + "DoorCurtains.obj",           texDir + "curtain.jpg",         { 10.0f, 0.0f, -10.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    room2.addObject({ objDir + "WindowsPlane.obj",            texDir + "OldWindows.jpg",      { 10.0f, 0.0f, -12.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    room2.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",   texDir + "wood.jpg",            { 18.0f, 0.0f, -40.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    room2.addObject({ objDir + "SetMejaMakanKayuIndoor.obj",   texDir + "wood.jpg",            { 2.0f, 0.0f, -40.0f },  { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    room2.addObject({ objDir + "sofa3.obj",                   texDir + "fabric.jpg",          { 23.0f, 0.0f, -23.0f },{ 0.0f, -90.0f, 0.0f } });
-    room2.addObject({ objDir + "Drawer.obj",                  texDir + "leather.jpg",         { -5.0f, 0.0f, -28.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f } });
-    g_Scene.addRoom(room2);
-
-    // 3. AREA TOILET / WC
-    Room wcRoom("Toilet Area");
-    wcRoom.addObject({ objDir + "WC.obj",                     texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    wcRoom.addObject({ objDir + "Step.obj",                   texDir + "leatherRed.png",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    wcRoom.addObject({ objDir + "Toilet.obj",                 texDir + "white.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    wcRoom.addObject({ objDir + "ToiletTile.obj",             texDir + "ToiletTile.jpg",      { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    g_Scene.addRoom(wcRoom);
-
-    // 4. AREA KORIDOR / HALLWAY
-    Room hallwayRoom("Hallway Area");
-    hallwayRoom.addObject({ objDir + "WallHall.obj",          texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    hallwayRoom.addObject({ objDir + "WallHallDetail.obj",    texDir + "wood.jpg",            { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    hallwayRoom.addObject({ objDir + "TembokMeratap3.obj",    texDir + "wall1.jpg",           { 10.0f, 0.0f, 2.0f },   { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f } });
-    g_Scene.addRoom(hallwayRoom);
 }
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(1024, 768);
-    glutCreateWindow("TR Grafika Komputer | Moya Caffe |");
+    glutCreateWindow("TR Grafika Komputer | 0-_[Moya Caffe]_-0 |");
 
     initGL();
 
-    // Inisialisasi Seluruh Scene & Objek
-    buildScene();
+    auto loadObject = [&](const std::string& objPath,
+                          const std::string& texPath,
+                          const Vector3& pos = { 0.0f, 0.0f, 0.0f },
+                          const Vector3& rot = { 0.0f, 0.0f, 0.0f },
+                          const Vector3& scale = { 1.0f, 1.0f, 1.0f }) {
+        TexturedGameObject obj;
+        if (obj.loadOBJ(objPath.c_str())) {
+            if (!texPath.empty()) {
+                obj.loadTexture(texPath.c_str());
+            }
+            obj.position = pos;
+            obj.rotation = rot;
+            obj.scale = scale;
+            sceneObjects.push_back(obj);
+        }
+    };
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\FloorIndoorRoom.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\FloorTiles.png",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.9f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap2.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\DoorCurtains.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\curtain.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WindowsPlane.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\OldWindows.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, -33.2f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Painting1.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\TexturePainting1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg");
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\MejaKayuKotak.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 0.0f, 0.0f, 7.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 0.0f, 0.0f, 14.0f }, { 0.0f, 180.0f, 0.0f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 16.0f, 0.0f, 7.0f }, { 0.0f, 180.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 16.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Drawer.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leather.jpg",
+               { 12.0f, 0.0f, -14.0f }, { 0.0f, -90.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+
+    // Room2
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallRoom2.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\DoorCurtains.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\curtain.jpg",
+               { 10.0f, 0.0f, -10.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WindowsPlane.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\OldWindows.jpg",
+               { 10.0f, 0.0f, -12.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+    
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 18.0f, 0.0f, -40.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 2.0f, 0.0f, -40.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+        
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
+               { 23.0f, 0.0f, -23.0f }, { 0.0f, -90.0f, 0.0f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Drawer.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leather.jpg",
+               { -5.0f, 0.0f, -28.0f }, { 0.0f, 0.0f, 0.0f }, { 1.2f, 1.2f, 1.2f });
+    
+    // WC
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WC.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Step.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\leatherRed.png",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\Toilet.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+    
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\ToiletTile.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\ToiletTile.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    // Hallway
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallHall.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\WallHallDetail.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap3.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wall1.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap4.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+    
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\TembokMeratap5.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+
+    // Doorframe
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\DoorFrame.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
+    
+    // Pintu Luar
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\PintuLuar.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\white.jpg",
+               { 10.0f, 0.0f, 2.0f }, { 0.0f, 0.0f, 0.0f }, { 1.8f, 1.8f, 1.8f });
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
