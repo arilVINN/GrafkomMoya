@@ -479,6 +479,16 @@ int main(int argc, char** argv) {
                { 2.0f, 0.0f, -40.0f },
                { 0.0f, 0.0f, 0.0f },
                { 1.2f, 1.2f, 1.2f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 12.0f, 0.0f, -100.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.2f, 1.2f, 1.2f });
+    loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\SetMejaMakanKayuIndoor.obj",
+               "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\wood.jpg",
+               { 12.0f, 0.0f, -85.0f },
+               { 0.0f, 0.0f, 0.0f },
+               { 1.2f, 1.2f, 1.2f });
         
     loadObject("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\sofa3.obj",
                "C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\Texture\\fabric.jpg",
