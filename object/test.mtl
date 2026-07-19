@@ -1,6 +1,38 @@
 # Blender 5.2.0 LTS MTL File: 'GRafkomObj.blend'
 # www.blender.org
 
+newmtl Assorted_Screw_Profiles
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_refl C:/_GWC Machined Steel Low_metallic.jpg
+map_Bump -bm 1.000000 C:/_GWC Machined Steel Low_normal.jpg
+
+newmtl Cycles_Architectural_Glass
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Elastic_Rubber
+Ns 416.611542
+Ka 1.000000 1.000000 1.000000
+Ks 0.236364 0.236364 0.236364
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/fire.png
+
 newmtl Material
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -134,12 +166,12 @@ map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/WhiteWall/textures/pain
 newmtl Material.017
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
 
 newmtl Material.018
 Ns 31.887766
@@ -149,7 +181,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/leather_red_02_coll1_2k.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
 
 newmtl Material.019
 Ns 250.000000
@@ -299,7 +331,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/leather_red_02_coll1_2k.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
 
 newmtl Material.035
 Ns 250.000000
@@ -329,7 +361,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/leather_red_02_coll1_2k.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
 
 newmtl Material.038
 Ns 155.666107
@@ -359,7 +391,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/leather_red_02_coll1_2k.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
 
 newmtl Material.041
 Ns 250.000000
@@ -419,7 +451,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Downloads/Blender/Texture/ForestGround1/textures/forrest_ground_01_diff_2k.jpg
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
 
 newmtl Material.047
 Ns 250.000000
@@ -499,7 +531,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd -s 0.2 0.19999999 1 C:/Users/kevin/Downloads/Blender/IMG_20260708_150359.jpg
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Lantai.png
 
 newmtl Material.055
 Ns 0.000000
@@ -509,7 +541,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd -s 0.3 0.29999998 1 C:/Users/kevin/Downloads/Blender/IMG_20260708_150359.jpg
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/lantai2.png
 
 newmtl Material.056
 Ns 250.000000
@@ -519,7 +551,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Downloads/Blender/Texture/ForestGround1/textures/forrest_ground_01_diff_2k.jpg
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
 
 newmtl Material.057
 Ns 250.000000
@@ -619,7 +651,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Downloads/Blender/images.jpg
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/logo2.png
 
 newmtl Material.067
 Ns 250.000000
@@ -762,7 +794,7 @@ illum 2
 map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/WhiteWall/textures/painted_plaster_wall_diff_1k.jpg
 
 newmtl Material.081
-Ns 250.000000
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
@@ -1220,3 +1252,666 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/genteng.png
+
+newmtl Material.127
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.128
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Wood.png
+
+newmtl Material.129
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.074178 0.074178 0.074178
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.130
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.131
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.132
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.133
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Wood.png
+
+newmtl Material.134
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.135
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Wood.png
+
+newmtl Material.136
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Wood.png
+
+newmtl Material.137
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.138
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.139
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.140
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.141
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.142
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.143
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018775 0.018775 0.018775
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.144
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
+
+newmtl Material.145
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.146
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/wood/textures/oak_veneer_01_diff_1k.jpg
+
+newmtl Material.147
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Logo.png
+
+newmtl Material.148
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Lantai.png
+
+newmtl Material.149
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.854302 0.697170 0.474149
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.150
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/wood3.png
+
+newmtl Material.151
+Ns 79.421471
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TableWoodKecil.png
+
+newmtl Material.152
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.153
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.154
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.155
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.156
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.157
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.158
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.159
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.160
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.161
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.162
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.163
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.164
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.165
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.166
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.167
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.168
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.169
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+
+newmtl Material.170
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
+
+newmtl Material.171
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
+
+newmtl Material.172
+Ns 562.500000
+Ka 1.000000 1.000000 1.000000
+Kd 0.896255 0.723069 0.042311
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.173
+Ns 250.000000
+Ka 0.640909 0.640909 0.640909
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Bump -bm 1.000000 C:/Material.001_Normal.jpg
+
+newmtl Material.174
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_d C:/co2-selo-real-inmetro.png
+
+newmtl Material.175
+Ns 562.500000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/fire.png
+
+newmtl Material.176
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
+
+newmtl Material.177
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/anime.png
+
+newmtl Material.178
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/anime2.png
+
+newmtl Material.179
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.240513 0.240513 0.240513
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.180
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.476994 0.476994 0.476994
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.181
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500964 0.500964 0.500964
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.182
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.409163 0.409163 0.409163
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.183
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.377505 0.377505 0.377505
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Plastic
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Red_paint
+Ns 708.657898
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/fire.png
+
+newmtl Red_paint_handle
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/fire.png
+map_Ns C:/Red_paint_handle_Roughness.jpg
+map_Bump -bm 1.000000 C:/Red_paint_handle_Normal.jpg
+
+newmtl aluminum
+Ns 360.000000
+Ka 0.868182 0.868182 0.868182
+Kd 0.349489 0.303224 0.206069
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl aluminum.001
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl aluminum_white
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl hose
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Bump -bm 0.500000 C:/TexturesCom_Rope_PneumaticHose_8K_normal.jpg
+
+newmtl label
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/fire.png
+
+newmtl yellow_metal
+Ns 422.499969
+Ka 0.500000 0.500000 0.500000
+Kd 0.921566 0.681108 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
