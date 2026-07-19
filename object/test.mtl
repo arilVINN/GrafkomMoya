@@ -1,45 +1,15 @@
 # Blender 5.2.0 LTS MTL File: 'GRafkomObj.blend'
 # www.blender.org
 
-newmtl MI_MWPalmTree_Bark_01
-Ns 360.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-
-newmtl MI_MWPalmTree_Bark_02
-Ns 0.000000
+newmtl Material
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/BatangSawit.png
-
-newmtl MI_MWPalmTree_Canopy_01
-Ns 360.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-
-newmtl MI_MWPalmTree_Canopy_02
-Ns 0.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/DaunSawit.png
+map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/genteng.png
 
 newmtl Material.005
 Ns 0.000000
@@ -791,6 +761,16 @@ d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/WhiteWall/textures/painted_plaster_wall_diff_1k.jpg
 
+newmtl Material.081
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/genteng.png
+
 newmtl Material.082
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -1004,22 +984,22 @@ map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Brick.png
 newmtl Material.103
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.589844 0.067078 0.043427
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
 
 newmtl Material.104
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.549316 0.042419 0.023926
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
 
 newmtl Material.105
 Ns 250.000000
@@ -1124,12 +1104,12 @@ map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
 newmtl Material.115
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
 
 newmtl Material.116
 Ns 250.000000
@@ -1144,12 +1124,12 @@ map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
 newmtl Material.117
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
 
 newmtl Material.118
 Ns 250.000000
@@ -1214,19 +1194,29 @@ map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/genteng.png
 newmtl Material.124
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
 
 newmtl Material.125
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
+
+newmtl Material.126
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/genteng.png
