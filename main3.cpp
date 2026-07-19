@@ -283,6 +283,22 @@ bool loadMTL(const std::string& mtlPath) {
             // Clamp Ns ke range OpenGL (0-128)
             currentMat->Ns = clampf(currentMat->Ns, 0.0f, 128.0f);
         }
+        else if (keyword == "d") {
+            float alpha;
+            if (ss >> alpha) {
+                currentMat->Kd[3] = alpha;
+                currentMat->Ka[3] = alpha;
+                currentMat->Ks[3] = alpha;
+            }
+        }
+        else if (keyword == "Tr") {
+            float trans;
+            if (ss >> trans) {
+                currentMat->Kd[3] = 1.0f - trans;
+                currentMat->Ka[3] = 1.0f - trans;
+                currentMat->Ks[3] = 1.0f - trans;
+            }
+        }
         else if (keyword == "map_Kd") {
             // Parse texture path (mungkin ada opsi -s sebelumnya)
             // Format: map_Kd [-s sx sy sz] path/ke/texture.jpg
@@ -516,79 +532,107 @@ void buildSceneDisplayList() {
 
     std::string lastMaterial = "___NONE___";
 
-    for (size_t b = 0; b < gBatches.size(); b++) {
-        const RenderBatch& batch = gBatches[b];
-        if (batch.faces.empty()) continue;
+    for (int pass = 0; pass < 2; pass++) {
+        // Pass 0: Render Objek Solid/Opaque, Pass 1: Render Objek Transparan (Kaca)
+        if (pass == 0) {
+            glDepthMask(GL_TRUE);
+        } else {
+            glDepthMask(GL_FALSE); // Matikan penulisan Z-buffer untuk kaca
+            lastMaterial = "___NONE___"; // Paksa update material untuk pass 2
+        }
 
-        // --- Set Material (hanya jika berubah) ---
-        if (batch.materialName != lastMaterial) {
-            lastMaterial = batch.materialName;
+        for (size_t b = 0; b < gBatches.size(); b++) {
+            const RenderBatch& batch = gBatches[b];
+            if (batch.faces.empty()) continue;
 
+            bool isTransparent = false;
             if (gMaterials.count(batch.materialName)) {
-                const Material& mat = gMaterials[batch.materialName];
+                if (gMaterials[batch.materialName].Kd[3] < 0.99f) {
+                    isTransparent = true;
+                }
+            }
 
-                // Set OpenGL material properties
-                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat.Ka);
-                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat.Kd);
-                glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat.Ks);
-                glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.Ns);
+            // Pisahkan batch berdasarkan pass
+            if (pass == 0 && isTransparent) continue;
+            if (pass == 1 && !isTransparent) continue;
 
-                // Set warna untuk non-lighting fallback
-                glColor4fv(mat.Kd);
+            // --- Set Material (hanya jika berubah) ---
+            if (batch.materialName != lastMaterial) {
+                lastMaterial = batch.materialName;
 
-                // Bind texture jika ada
-                if (mat.hasTexture) {
-                    glEnable(GL_TEXTURE_2D);
-                    glBindTexture(GL_TEXTURE_2D, mat.textureID);
+                if (gMaterials.count(batch.materialName)) {
+                    const Material& mat = gMaterials[batch.materialName];
+
+                    // Kurangi efek specular (pantulan abu-abu) jika ini adalah kaca
+                    float customKs[4] = { mat.Ks[0], mat.Ks[1], mat.Ks[2], mat.Ks[3] };
+                    if (isTransparent) {
+                        customKs[0] *= 0.1f; customKs[1] *= 0.1f; customKs[2] *= 0.1f;
+                    }
+
+                    // Set OpenGL material properties
+                    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat.Ka);
+                    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat.Kd);
+                    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, customKs);
+                    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.Ns);
+
+                    // Set warna untuk non-lighting fallback
+                    glColor4fv(mat.Kd);
+
+                    // Bind texture jika ada
+                    if (mat.hasTexture) {
+                        glEnable(GL_TEXTURE_2D);
+                        glBindTexture(GL_TEXTURE_2D, mat.textureID);
+                    } else {
+                        glDisable(GL_TEXTURE_2D);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                    }
                 } else {
+                    // Material default (tidak ditemukan)
+                    float defaultKd[] = {0.7f, 0.7f, 0.7f, 1.0f};
+                    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, defaultKd);
+                    glColor4fv(defaultKd);
                     glDisable(GL_TEXTURE_2D);
                     glBindTexture(GL_TEXTURE_2D, 0);
                 }
-            } else {
-                // Material default (tidak ditemukan)
-                float defaultKd[] = {0.7f, 0.7f, 0.7f, 1.0f};
-                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, defaultKd);
-                glColor4fv(defaultKd);
-                glDisable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, 0);
             }
-        }
 
-        // Dapatkan material untuk texture scaling
-        float tsS = 1.0f, tsT = 1.0f;
-        if (gMaterials.count(batch.materialName)) {
-            tsS = gMaterials[batch.materialName].texScaleS;
-            tsT = gMaterials[batch.materialName].texScaleT;
-        }
-
-        // --- Render semua face dalam batch ini ---
-        for (size_t f = 0; f < batch.faces.size(); f++) {
-            const std::vector<FaceVert>& face = batch.faces[f];
-
-            glBegin(GL_POLYGON);
-            for (size_t i = 0; i < face.size(); i++) {
-                const FaceVert& fv = face[i];
-
-                // Normal
-                if (fv.ni >= 0 && fv.ni < (int)gNormals.size()) {
-                    glNormal3f(gNormals[fv.ni].x, gNormals[fv.ni].y, gNormals[fv.ni].z);
-                }
-
-                // Texture Coordinate (dengan UV scaling dari MTL)
-                if (fv.ti >= 0 && fv.ti < (int)gTexCoords.size()) {
-                    float u = gTexCoords[fv.ti].u * tsS;
-                    float v = gTexCoords[fv.ti].v * tsT;
-                    glTexCoord2f(u, v);
-                }
-
-                // Vertex Position
-                if (fv.vi >= 0 && fv.vi < (int)gVertices.size()) {
-                    glVertex3f(gVertices[fv.vi].x, gVertices[fv.vi].y, gVertices[fv.vi].z);
-                }
+            // Dapatkan material untuk texture scaling
+            float tsS = 1.0f, tsT = 1.0f;
+            if (gMaterials.count(batch.materialName)) {
+                tsS = gMaterials[batch.materialName].texScaleS;
+                tsT = gMaterials[batch.materialName].texScaleT;
             }
-            glEnd();
+
+            // --- Render semua face dalam batch ini ---
+            for (size_t f = 0; f < batch.faces.size(); f++) {
+                const std::vector<FaceVert>& face = batch.faces[f];
+
+                glBegin(GL_POLYGON);
+                for (size_t i = 0; i < face.size(); i++) {
+                    const FaceVert& fv = face[i];
+
+                    // Normal
+                    if (fv.ni >= 0 && fv.ni < (int)gNormals.size()) {
+                        glNormal3f(gNormals[fv.ni].x, gNormals[fv.ni].y, gNormals[fv.ni].z);
+                    }
+
+                    // Texture Coordinate (dengan UV scaling dari MTL)
+                    if (fv.ti >= 0 && fv.ti < (int)gTexCoords.size()) {
+                        float u = gTexCoords[fv.ti].u * tsS;
+                        float v = gTexCoords[fv.ti].v * tsT;
+                        glTexCoord2f(u, v);
+                    }
+
+                    // Vertex Position
+                    if (fv.vi >= 0 && fv.vi < (int)gVertices.size()) {
+                        glVertex3f(gVertices[fv.vi].x, gVertices[fv.vi].y, gVertices[fv.vi].z);
+                    }
+                }
+                glEnd();
+            }
         }
     }
+    glDepthMask(GL_TRUE); // Kembalikan Depth Mask ke normal
 
     glDisable(GL_TEXTURE_2D);
     glEndList();
@@ -806,6 +850,10 @@ void initGL() {
     // Aktifkan Color Material agar glColor juga mempengaruhi material
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+    // Aktifkan Blending untuk efek transparan (kaca/alpha)
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Hint kualitas
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
