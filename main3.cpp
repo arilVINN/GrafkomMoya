@@ -127,6 +127,7 @@ bool mouseMiddleDown = false;
 
 // --- Keyboard State (untuk WASD movement) ---
 bool keyState[256] = { false };
+bool shiftDown = false; // Tracking untuk Left Shift
 
 // --- Window ---
 int winW = 1280, winH = 720;
@@ -791,7 +792,7 @@ void drawHUD() {
 
     glColor3f(0.7f, 0.9f, 0.7f);
     drawBitmapString(rx, 95,  "W / A / S / D    : Gerak Maju/Kiri/Mundur/Kanan");
-    drawBitmapString(rx, 80,  "Q / E            : Gerak Naik/Turun");
+    drawBitmapString(rx, 80,  "SPACE / LSHIFT   : Gerak Naik/Turun");
 
     glColor3f(0.9f, 0.7f, 0.7f);
     drawBitmapString(rx, 60,  "Z                : Toggle Wireframe");
@@ -1039,6 +1040,16 @@ void keyboardUp(unsigned char key, int x, int y) {
     keyState[key] = false;
 }
 
+// --- Special Keyboard (key down) ---
+void specialKey(int key, int x, int y) {
+    if (key == GLUT_KEY_SHIFT_L) shiftDown = true;
+}
+
+// --- Special Keyboard (key up) ---
+void specialKeyUp(int key, int x, int y) {
+    if (key == GLUT_KEY_SHIFT_L) shiftDown = false;
+}
+
 // --- Mouse Button ---
 void mouseButton(int button, int state, int x, int y) {
     // Simpan posisi mouse
@@ -1162,11 +1173,11 @@ void update(int value) {
         camPivot.z += rightZ * moveSpeed;
         needRedraw = true;
     }
-    if (keyState['q'] || keyState['Q']) {
+    if (keyState[' ']) {
         camPivot.y += moveSpeed;
         needRedraw = true;
     }
-    if (keyState['e'] || keyState['E']) {
+    if (shiftDown) {
         camPivot.y -= moveSpeed;
         needRedraw = true;
     }
@@ -1227,6 +1238,8 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshape);        // Window resize callback (Projection Matrix)
     glutKeyboardFunc(keyboard);      // Keyboard key-down
     glutKeyboardUpFunc(keyboardUp);  // Keyboard key-up
+    glutSpecialFunc(specialKey);     // Special key-down (Shift)
+    glutSpecialUpFunc(specialKeyUp); // Special key-up
     glutMouseFunc(mouseButton);      // Mouse button
     glutMotionFunc(mouseMotion);     // Mouse drag
     glutMouseWheelFunc(mouseWheel);  // Scroll wheel (FreeGLUT)

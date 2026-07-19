@@ -453,16 +453,6 @@ d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FloorWhiteTiles2.png
 
-newmtl Material.046
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
-
 newmtl Material.047
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -553,25 +543,15 @@ d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/lantai2.png
 
-newmtl Material.056
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FabricBlack.png
-
 newmtl Material.057
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800007 0.153286 0.163413
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/wood3.png
 
 newmtl Material.058
 Ns 250.000000
@@ -790,7 +770,7 @@ Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
-d 0.236364
+d 0.454545
 illum 9
 
 newmtl Material.080
@@ -850,7 +830,7 @@ Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
-d 0.236364
+d 0.458182
 illum 9
 
 newmtl Material.086
@@ -930,7 +910,7 @@ Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
-d 0.236364
+d 0.440000
 illum 9
 
 newmtl Material.094
@@ -1073,26 +1053,6 @@ d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
 
-newmtl Material.108
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
-
-newmtl Material.109
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
-
 newmtl Material.110
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -1102,26 +1062,6 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
-
-newmtl Material.111
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap6.png
-
-newmtl Material.112
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap1.png
 
 newmtl Material.113
 Ns 250.000000
@@ -1210,7 +1150,7 @@ Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
-d 0.236364
+d 0.443636
 illum 9
 
 newmtl Material.122
@@ -1611,7 +1551,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/woodchair.png
 
 newmtl Material.162
 Ns 250.000000
@@ -1631,7 +1571,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/woodchair.png
 
 newmtl Material.164
 Ns 250.000000
@@ -1651,7 +1591,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/woodchair.png
 
 newmtl Material.166
 Ns 250.000000
@@ -1671,7 +1611,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/woodchair.png
 
 newmtl Material.168
 Ns 250.000000
@@ -1681,7 +1621,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/woodchair.png
 
 newmtl Material.169
 Ns 250.000000
@@ -2251,7 +2191,7 @@ Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
-d 0.236364
+d 0.447273
 illum 9
 
 newmtl Material.226
@@ -2482,7 +2422,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Table.png
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/wood3.png
 
 newmtl Material.249
 Ns 250.000000
@@ -2747,7 +2687,7 @@ illum 2
 newmtl Material.275
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
+Kd 0.326851 0.326851 0.326851
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -2833,6 +2773,126 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+
+newmtl Material.284
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/curtain.png
+
+newmtl Material.285
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
+
+newmtl Material.286
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
+
+newmtl Material.287
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Merah.png
+
+newmtl Material.288
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
+
+newmtl Material.289
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
+
+newmtl Material.290
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
+
+newmtl Material.291
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.017206 0.017206 0.017206
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.292
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.011302 0.011302 0.011302
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.293
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/wood3.png
+
+newmtl Material.294
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/atapatapan.png
+
+newmtl Material.295
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/wood3.png
 
 newmtl Plastic
 Ns 360.000000
