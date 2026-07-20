@@ -43,6 +43,16 @@ d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Downloads/Blender/Texture/textures/genteng.png
 
+newmtl Material.004
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.633835 0.073136 0.058333
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
 newmtl Material.005
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
@@ -453,6 +463,16 @@ d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/FloorWhiteTiles2.png
 
+newmtl Material.046
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.633835 0.073136 0.058333
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
 newmtl Material.047
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -542,6 +562,16 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/lantai2.png
+
+newmtl Material.056
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/garasi.png
 
 newmtl Material.057
 Ns 250.000000
@@ -1052,6 +1082,16 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/TembokMeratap4.png
+
+newmtl Material.108
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Rektor.png
 
 newmtl Material.110
 Ns 250.000000
@@ -2893,6 +2933,26 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/wood3.png
+
+newmtl Material.296
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.497398 0.470118 0.442011
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.297
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/kevin/Documents/Grfk/TRGrafkom/Texture/Meme.png
 
 newmtl Plastic
 Ns 360.000000
