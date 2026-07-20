@@ -1,27 +1,23 @@
 // ============================================================
-//  TUGAS AKHIR GRAFIKA KOMPUTER
-//  FreeGLUT OBJ+MTL Viewer dengan Texture, MVP, & Kamera Blender-Style
+//  MOYA YA GES YA, OBJEK-NYA SANGAT VARIASI SEKALI
 // ============================================================
 //
 //  FITUR:
-//  1. Load model .OBJ + .MTL dari Blender (lengkap dengan texture)
-//  2. Pipeline MVP (Model-View-Projection) yang eksplisit
-//  3. Kamera ala Blender:
+//  1. Load model .OBJ + .MTL dari Blender (Info: di blender pake bake biar bisa diload texturenya )
+//  2. Kamera bisa woooshhhh
+//  3. Kamera kek Blender:
 //     - Left Mouse Drag    : Orbit (rotasi mengelilingi pivot)
-//     - Right Mouse Drag   : Pan (geser titik pivot)
+//     - Right Mouse Drag   : Geser titik pivot
 //     - Scroll Wheel       : Zoom in/out
-//     - W/A/S/D            : Gerak maju/mundur/kiri/kanan
-//     - Q/E                : Gerak naik/turun
+//     - W/A/S/D            : Maju/Mundur/Kiri/Kanan
+//     - Spasi/Shift        : Naik/Turun (Kek minecraft, requestnya JOSAN)
 //     - Z                  : Toggle wireframe
 //     - R                  : Reset kamera
-//  4. Lighting + Material dari file .MTL
-//  5. HUD info (vertex count, FPS, kontrol)
+//  4. Material hasil bake dari file .MTL
+//  5. Info HUD (vertex count, FPS, kontrol)
 //
-//  KOMPILASI (MinGW / Code::Blocks):
-//  g++ main.cpp -o main.exe -lfreeglut -lopengl32 -lglu32 -lwinmm -lgdi32
 // ============================================================
 
-// --- stb_image untuk loading texture JPG/PNG ---
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -46,21 +42,21 @@
 #endif
 #define DEG2RAD (M_PI / 180.0)
 
-// --- Vektor 2D (untuk UV / Texture Coordinate) ---
+// Vektor 2D (buat UV / Texture Coordinatenya)
 struct Vec2 {
     float u, v;
     Vec2() : u(0), v(0) {}
     Vec2(float u, float v) : u(u), v(v) {}
 };
 
-// --- Vektor 3D ---
+// Vektor 3D 
 struct Vec3 {
     float x, y, z;
     Vec3() : x(0), y(0), z(0) {}
     Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 };
 
-// --- Material (dari file .MTL) ---
+// Material (dari file .MTL)
 struct Material {
     std::string name;
     float Ka[4];    // Ambient color
@@ -70,7 +66,7 @@ struct Material {
     std::string texturePath;    // Path ke file texture (map_Kd)
     float texScaleS, texScaleT; // Texture UV scale (dari opsi -s di MTL)
     GLuint textureID;           // OpenGL texture ID
-    bool hasTexture;            // Apakah material ini punya texture?
+    bool hasTexture;            // cek material punya texture or nah
 
     Material() : Ns(32.0f), texScaleS(1.0f), texScaleT(1.0f),
                  textureID(0), hasTexture(false) {
@@ -80,13 +76,13 @@ struct Material {
     }
 };
 
-// --- Vertex pada Face (indeks ke vertex, texcoord, normal) ---
+//  Vertex pada Face (indeks ke vertex, texcoord, normal) 
 struct FaceVert {
     int vi, ti, ni; // vertex index, texcoord index, normal index (-1 = tidak ada)
     FaceVert() : vi(-1), ti(-1), ni(-1) {}
 };
 
-// --- Batch render: sekelompok face dengan material yang sama ---
+//  Batch render: sekelompok face dengan material yang sama 
 struct RenderBatch {
     std::string materialName;
     std::vector< std::vector<FaceVert> > faces;
@@ -96,7 +92,7 @@ struct RenderBatch {
 // SECTION 2: VARIABEL GLOBAL
 // ============================================================
 
-// --- Data Geometri Scene (dari file .OBJ) ---
+//  Data Geometri Scene (dari file .OBJ) 
 std::vector<Vec3> gVertices;    // Semua vertex positions
 std::vector<Vec2> gTexCoords;   // Semua texture coordinates
 std::vector<Vec3> gNormals;     // Semua vertex normals
@@ -104,43 +100,46 @@ std::map<std::string, Material> gMaterials;  // Semua material (key = nama)
 std::vector<RenderBatch> gBatches;           // Face groups per material
 std::map<std::string, GLuint> gTextureCache; // Cache texture (path -> GL ID)
 
-// --- Display List untuk render cepat ---
+// Display List untuk render cepat
 GLuint gSceneList = 0;
 
-// --- Statistik Scene ---
+// Statistik Scene
 int gTotalVerts = 0, gTotalFaces = 0, gTotalTextures = 0, gTotalObjects = 0;
 
-// --- KAMERA (Blender-Style Orbit Camera) ---
+// KAMERA
 float camYaw   = -45.0f;   // Sudut horizontal (derajat)
 float camPitch =  20.0f;   // Sudut vertikal (derajat)
 float camDist  =  80.0f;   // Jarak kamera dari pivot
 Vec3  camPivot(0.0f, 3.0f, 60.0f); // Titik yang dilihat kamera (pivot/target)
 
-// Batas pivot awal (dihitung setelah load model)
+// Batas pivot awal
 Vec3 sceneBoundsMin, sceneBoundsMax, sceneCenter;
 
-// --- Mouse State ---
+// Mouse State
 int mouseLastX = 0, mouseLastY = 0;
 bool mouseLeftDown   = false;
 bool mouseRightDown  = false;
 bool mouseMiddleDown = false;
 
-// --- Keyboard State (untuk WASD movement) ---
+// Keyboard State (untuk WASD movement)
 bool keyState[256] = { false };
 bool shiftDown = false; // Tracking untuk Left Shift
 
-// --- Window ---
+// Day/Night State
+bool isDayTime = true;
+
+// Window
 int winW = 1280, winH = 720;
 
-// --- Mode Render ---
+// Mode Render
 bool wireframeMode = false;
 
-// --- FPS Counter ---
+// FPS Counter
 int   frameCount = 0;
 float currentFPS = 0.0f;
 int   lastFPSTime = 0;
 
-// --- Movement Speed ---
+// Movement Speed
 float moveSpeed = 0.8f;
 
 // ============================================================
@@ -178,11 +177,11 @@ static void drawBitmapString(float x, float y, const char* text, void* font = GL
 }
 
 // ============================================================
-// SECTION 4: TEXTURE LOADER (stb_image -> OpenGL)
+// SECTION 4: TEXTURE LOADER (stb_image ke OpenGL)
 // ============================================================
 
 GLuint loadTexture(const std::string& path) {
-    // Cek cache: apakah texture ini sudah pernah di-load?
+    // Cek cache
     if (gTextureCache.count(path)) {
         return gTextureCache[path];
     }
@@ -191,7 +190,7 @@ GLuint loadTexture(const std::string& path) {
 
     // Load image dengan stb_image
     int width, height, channels;
-    stbi_set_flip_vertically_on_load(1); // Flip Y agar sesuai OpenGL
+    stbi_set_flip_vertically_on_load(1); 
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
     if (!data) {
@@ -199,7 +198,7 @@ GLuint loadTexture(const std::string& path) {
         return 0;
     }
 
-    // Tentukan format berdasarkan jumlah channel
+    // Format
     GLenum format = GL_RGB;
     if (channels == 1) format = GL_LUMINANCE;
     else if (channels == 3) format = GL_RGB;
@@ -307,7 +306,6 @@ bool loadMTL(const std::string& mtlPath) {
             std::getline(ss, remainder);
             remainder = trimStr(remainder);
 
-            // Cari path absolut (dimulai dengan drive letter, misal C:/)
             size_t pathStart = std::string::npos;
             for (size_t i = 0; i + 2 < remainder.size(); i++) {
                 if (isalpha(remainder[i]) && remainder[i+1] == ':' &&
@@ -393,17 +391,17 @@ bool loadOBJ(const std::string& objPath) {
         sscanf(line.c_str(), "%15s", keyword);
 
         if (strcmp(keyword, "mtllib") == 0) {
-            // --- Load Material Library ---
+            // Load Material Library
             std::string mtlFile = trimStr(line.substr(6));
             std::string mtlFullPath = baseDir + mtlFile;
             loadMTL(mtlFullPath);
         }
         else if (strcmp(keyword, "o") == 0) {
-            // --- Object baru ---
+            // Object baru
             gTotalObjects++;
         }
         else if (strcmp(keyword, "v") == 0 && line.size() > 1 && line[1] == ' ') {
-            // --- Vertex Position ---
+            // Vertex Position
             Vec3 v;
             sscanf(line.c_str(), "v %f %f %f", &v.x, &v.y, &v.z);
             gVertices.push_back(v);
@@ -417,19 +415,19 @@ bool loadOBJ(const std::string& objPath) {
             if (v.z > sceneBoundsMax.z) sceneBoundsMax.z = v.z;
         }
         else if (strcmp(keyword, "vt") == 0) {
-            // --- Texture Coordinate ---
+            // Texture Coordinate
             Vec2 vt;
             sscanf(line.c_str(), "vt %f %f", &vt.u, &vt.v);
             gTexCoords.push_back(vt);
         }
         else if (strcmp(keyword, "vn") == 0) {
-            // --- Vertex Normal ---
+            // Vertex Normal
             Vec3 vn;
             sscanf(line.c_str(), "vn %f %f %f", &vn.x, &vn.y, &vn.z);
             gNormals.push_back(vn);
         }
         else if (strcmp(keyword, "usemtl") == 0) {
-            // --- Ganti Material Aktif ---
+            // Ganti Material Aktif
             std::string matName = trimStr(line.substr(6));
 
             // Buat batch baru untuk material ini
@@ -440,8 +438,6 @@ bool loadOBJ(const std::string& objPath) {
         }
         else if (strcmp(keyword, "f") == 0) {
             // --- Face (polygon) ---
-            // Format: f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3 [v4/vt4/vn4 ...]
-            // Juga handle: f v1 | f v1//vn1 | f v1/vt1
 
             if (!currentBatch) {
                 // Face tanpa material -> buat batch default
@@ -521,7 +517,7 @@ bool loadOBJ(const std::string& objPath) {
 }
 
 // ============================================================
-// SECTION 7: BUILD DISPLAY LIST (Compile scene sekali)
+// SECTION 7: BUILD DISPLAY LIST (Compile scene)
 // ============================================================
 
 void buildSceneDisplayList() {
@@ -538,7 +534,7 @@ void buildSceneDisplayList() {
         if (pass == 0) {
             glDepthMask(GL_TRUE);
         } else {
-            glDepthMask(GL_FALSE); // Matikan penulisan Z-buffer untuk kaca
+            glDepthMask(GL_FALSE); 
             lastMaterial = "___NONE___"; // Paksa update material untuk pass 2
         }
 
@@ -557,14 +553,13 @@ void buildSceneDisplayList() {
             if (pass == 0 && isTransparent) continue;
             if (pass == 1 && !isTransparent) continue;
 
-            // --- Set Material (hanya jika berubah) ---
             if (batch.materialName != lastMaterial) {
                 lastMaterial = batch.materialName;
 
                 if (gMaterials.count(batch.materialName)) {
                     const Material& mat = gMaterials[batch.materialName];
 
-                    // Kurangi efek specular (pantulan abu-abu) jika ini adalah kaca
+                    // Kurangi efek specular jika kaca
                     float customKs[4] = { mat.Ks[0], mat.Ks[1], mat.Ks[2], mat.Ks[3] };
                     if (isTransparent) {
                         customKs[0] *= 0.1f; customKs[1] *= 0.1f; customKs[2] *= 0.1f;
@@ -642,10 +637,10 @@ void buildSceneDisplayList() {
 }
 
 // ============================================================
-// SECTION 8: GRID & AXIS (Referensi Visual)
+// SECTION 8: GRID & AXIS
 // ============================================================
 
-// Menggambar grid pada bidang XZ (seperti di Blender)
+// Menggambar grid pada bidang XZ 
 void drawGrid() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     glDisable(GL_LIGHTING);
@@ -779,11 +774,11 @@ void drawHUD() {
     sprintf(buf, "Mode: %s", wireframeMode ? "WIREFRAME" : "SOLID");
     drawBitmapString(10, winH - 145, buf);
 
-    // === Teks Kontrol (kanan bawah) ===
+    // Teks Kontrol (kanan bawah)
     float rx = (float)(winW - 300);
 
     glColor3f(0.3f, 0.85f, 1.0f);
-    drawBitmapString(rx, 165, "KONTROL KAMERA", GLUT_BITMAP_HELVETICA_18);
+    drawBitmapString(rx, 165, "KONTROL GESS", GLUT_BITMAP_HELVETICA_18);
 
     glColor3f(0.9f, 0.9f, 0.7f);
     drawBitmapString(rx, 145, "Left Mouse Drag  : Orbit (Rotasi)");
@@ -814,8 +809,8 @@ void drawHUD() {
 // ============================================================
 
 void initGL() {
-    // Background gelap (seperti viewport Blender)
-    glClearColor(0.18f, 0.18f, 0.22f, 1.0f);
+    // Background langit siang
+    glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
 
     // Aktifkan Depth Test
     glEnable(GL_DEPTH_TEST);
@@ -826,27 +821,114 @@ void initGL() {
     glEnable(GL_NORMALIZE);
     glShadeModel(GL_SMOOTH);
 
-    // === LIGHT 0: Lampu Utama (mengikuti kamera) ===
-    glEnable(GL_LIGHT0);
-    GLfloat light0Pos[]     = { 0.0f, 1.0f, 1.0f, 0.0f }; // Directional (w=0)
-    GLfloat light0Ambient[] = { 0.15f, 0.15f, 0.18f, 1.0f };
-    GLfloat light0Diffuse[] = { 0.85f, 0.83f, 0.80f, 1.0f };
-    GLfloat light0Spec[]    = { 0.5f, 0.5f, 0.5f, 1.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, light0Pos);
-    glLightfv(GL_LIGHT0, GL_AMBIENT,  light0Ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE,  light0Diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light0Spec);
+    // // === LIGHT 0: Lampu Utama (mengikuti kamera) ===
+    // glEnable(GL_LIGHT0);
+    // GLfloat light0Pos[]     = { 0.0f, 1.0f, 1.0f, 0.0f }; // Directional (w=0)
+    // GLfloat light0Ambient[] = { 0.15f, 0.15f, 0.18f, 1.0f };
+    // GLfloat light0Diffuse[] = { 0.85f, 0.83f, 0.80f, 1.0f };
+    // GLfloat light0Spec[]    = { 0.5f, 0.5f, 0.5f, 1.0f };
+    // glLightfv(GL_LIGHT0, GL_POSITION, light0Pos);
+    // glLightfv(GL_LIGHT0, GL_AMBIENT,  light0Ambient);
+    // glLightfv(GL_LIGHT0, GL_DIFFUSE,  light0Diffuse);
+    // glLightfv(GL_LIGHT0, GL_SPECULAR, light0Spec);
 
-    // === LIGHT 1: Fill Light (dari sisi berlawanan) ===
+
+    // Room Light Prop
+    GLfloat roomLightAmbient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    GLfloat roomLightSpec[]    = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+    // === LIGHT 1: RUUANG KEMBAR SATUNYA ===
     glEnable(GL_LIGHT1);
     GLfloat light1Pos[]     = { -1.0f, 0.5f, -0.5f, 0.0f };
-    GLfloat light1Ambient[] = { 0.05f, 0.05f, 0.08f, 1.0f };
-    GLfloat light1Diffuse[] = { 0.3f, 0.3f, 0.35f, 1.0f };
-    GLfloat light1Spec[]    = { 0.1f, 0.1f, 0.1f, 1.0f };
-    glLightfv(GL_LIGHT1, GL_POSITION, light1Pos);
-    glLightfv(GL_LIGHT1, GL_AMBIENT,  light1Ambient);
+    GLfloat light1Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // White light
+    GLfloat light1Spec[]    = { 0.5f, 0.5f, 0.5f, 1.0f };
+    float light1ConstAtt = 1.0f;
+    float light1LinearAtt = 0.007f;
+    float light1QuadAtt = 0.0002f;
+    glLightfv(GL_LIGHT1, GL_AMBIENT,  roomLightAmbient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE,  light1Diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light1Spec);
+    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, light1ConstAtt);
+    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, light1LinearAtt);
+    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, light1QuadAtt);
+
+    // === LIGHT 2: lampu Ruang Tengah Itu Lah ===
+    glEnable(GL_LIGHT2);
+    GLfloat light2Diffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Slightly dimmed
+    float light2ConstAtt = 1.0f;
+    float light2LinearAtt = 0.01f; // Increased attenuation
+    float light2QuadAtt = 0.002f;
+    glLightfv(GL_LIGHT2, GL_AMBIENT,  roomLightAmbient);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE,  light2Diffuse);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, roomLightSpec);
+    glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, light2ConstAtt);
+    glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, light2LinearAtt);
+    glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, light2QuadAtt);
+
+    // === LIGHT 3: RUANG BELAKANG (red) ===
+    glEnable(GL_LIGHT3);
+    GLfloat light3Diffuse[] = { 1.5f, 1.5f, 1.5f, 1.0f }; // Brighter white
+    float light3ConstAtt = 1.0f;
+    float light3LinearAtt = 0.001f; // Much lower attenuation
+    float light3QuadAtt = 0.0f;
+    glLightfv(GL_LIGHT3, GL_AMBIENT,  roomLightAmbient);
+    glLightfv(GL_LIGHT3, GL_DIFFUSE,  light3Diffuse);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, roomLightSpec);
+    glLightf(GL_LIGHT3, GL_CONSTANT_ATTENUATION, light3ConstAtt);
+    glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, light3LinearAtt);
+    glLightf(GL_LIGHT3, GL_QUADRATIC_ATTENUATION, light3QuadAtt);
+
+    // === LIGHT 4: RUANG DEPAN (Green) ===
+    glEnable(GL_LIGHT4);
+    GLfloat light4Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light4ConstAtt = 1.0f;
+    float light4LinearAtt = 0.007f;
+    float light4QuadAtt = 0.0002f;
+    glLightfv(GL_LIGHT4, GL_AMBIENT,  roomLightAmbient);
+    glLightfv(GL_LIGHT4, GL_DIFFUSE,  light4Diffuse);
+    glLightfv(GL_LIGHT4, GL_SPECULAR, roomLightSpec);
+    glLightf(GL_LIGHT4, GL_CONSTANT_ATTENUATION, light4ConstAtt);
+    glLightf(GL_LIGHT4, GL_LINEAR_ATTENUATION, light4LinearAtt);
+    glLightf(GL_LIGHT4, GL_QUADRATIC_ATTENUATION, light4QuadAtt);
+
+    // === LIGHT 5: WC (Blue) ===
+    glEnable(GL_LIGHT5);
+    GLfloat light5Diffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Slightly dimmed
+    float light5ConstAtt = 1.0f;
+    float light5LinearAtt = 0.01f; // Increased attenuation
+    float light5QuadAtt = 0.002f;
+    glLightfv(GL_LIGHT5, GL_AMBIENT,  roomLightAmbient);
+    glLightfv(GL_LIGHT5, GL_DIFFUSE,  light5Diffuse);
+    glLightfv(GL_LIGHT5, GL_SPECULAR, roomLightSpec);
+    glLightf(GL_LIGHT5, GL_CONSTANT_ATTENUATION, light5ConstAtt);
+    glLightf(GL_LIGHT5, GL_LINEAR_ATTENUATION, light5LinearAtt);
+    glLightf(GL_LIGHT5, GL_QUADRATIC_ATTENUATION, light5QuadAtt);
+
+    // === LIGHT 6: SEBELAH DAPUR (Purple/Magenta) ===
+    glEnable(GL_LIGHT6);
+    GLfloat light6Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light6ConstAtt = 1.0f;
+    float light6LinearAtt = 0.007f;
+    float light6QuadAtt = 0.0002f;
+    glLightfv(GL_LIGHT6, GL_AMBIENT,  roomLightAmbient);
+    glLightfv(GL_LIGHT6, GL_DIFFUSE,  light6Diffuse);
+    glLightfv(GL_LIGHT6, GL_SPECULAR, roomLightSpec);
+    glLightf(GL_LIGHT6, GL_CONSTANT_ATTENUATION, light6ConstAtt);
+    glLightf(GL_LIGHT6, GL_LINEAR_ATTENUATION, light6LinearAtt);
+    glLightf(GL_LIGHT6, GL_QUADRATIC_ATTENUATION, light6QuadAtt);
+
+    // === LIGHT 7: RUANG KEMBAR (Cyan) ===
+    glEnable(GL_LIGHT7);
+    GLfloat light7Diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light7ConstAtt = 1.0f;
+    float light7LinearAtt = 0.007f;
+    float light7QuadAtt = 0.0002f;
+    glLightfv(GL_LIGHT7, GL_AMBIENT,  roomLightAmbient);
+    glLightfv(GL_LIGHT7, GL_DIFFUSE,  light7Diffuse);
+    glLightfv(GL_LIGHT7, GL_SPECULAR, roomLightSpec);
+    glLightf(GL_LIGHT7, GL_CONSTANT_ATTENUATION, light7ConstAtt);
+    glLightf(GL_LIGHT7, GL_LINEAR_ATTENUATION, light7LinearAtt);
+    glLightf(GL_LIGHT7, GL_QUADRATIC_ATTENUATION, light7QuadAtt);
 
     // Aktifkan Color Material agar glColor juga mempengaruhi material
     glEnable(GL_COLOR_MATERIAL);
@@ -902,6 +984,23 @@ void display() {
         0.0, 1.0, 0.0                               // Up Vector
     );
 
+    // Set positions of lights in world coordinates (after gluLookAt)
+    GLfloat light1Pos[] = { 15.0f, 11.5f, 140.0f, 1.0f }; //ruang kembar satunya
+    GLfloat light2Pos[] = { -10.0f, 11.5f, 90.0f, 1.0f }; //ruang tengah persetan itu - orange
+    GLfloat light3Pos[] = { -20.0f, 11.5f, 150.0f, 1.0f }; //semi outdoor - rot
+    GLfloat light4Pos[] = { -8.0f, 11.5f, 67.0f, 1.0f }; //ruang kasir - grun
+    GLfloat light5Pos[] = { 15.0f, 11.5f, 105.0f, 1.0f }; //wc - blau
+    GLfloat light6Pos[] = { 18.0f, 11.5f, 80.0f, 1.0f }; //ruang jejer dapur? - purple
+    GLfloat light7Pos[] = { 15.0f, 11.5f, 120.0f, 1.0f }; //ruang kembar - cyan
+    
+    glLightfv(GL_LIGHT1, GL_POSITION, light1Pos);
+    glLightfv(GL_LIGHT2, GL_POSITION, light2Pos);
+    glLightfv(GL_LIGHT3, GL_POSITION, light3Pos);
+    glLightfv(GL_LIGHT4, GL_POSITION, light4Pos);
+    glLightfv(GL_LIGHT5, GL_POSITION, light5Pos);
+    glLightfv(GL_LIGHT6, GL_POSITION, light6Pos);
+    glLightfv(GL_LIGHT7, GL_POSITION, light7Pos);
+
     // ============================
     // MODEL MATRIX (M) + RENDER
     // ============================
@@ -935,6 +1034,38 @@ void display() {
     drawGrid();
     drawAxes();
 
+    // Render bulbs (balls)
+    struct LightInfo {
+        GLenum id;
+        float x, y, z;
+        float r, g, b;
+    };
+
+    LightInfo lamps[] = {
+        { GL_LIGHT1, 15.0f, 11.5f, 140.0f, 1.0f, 1.0f, 1.0f }, // Kembar2
+        { GL_LIGHT2, -10.0f, 11.5f, 90.0f, 1.0f, 1.0f, 1.0f }, // Tengah
+        { GL_LIGHT3, -20.0f, 11.5f, 150.0f, 1.0f, 1.0f, 1.0f }, // Semitruck
+        { GL_LIGHT5, 15.0f, 11.5f, 105.0f, 1.0f, 1.0f, 1.0f }, // WC
+        { GL_LIGHT6, 18.0f, 11.5f, 80.0f, 1.0f, 1.20f, 1.0f }, // SebalahDapur
+        { GL_LIGHT7, 15.0f, 11.5f, 120.0f, 1.0f, 1.0f, 1.0f } // Kembar1
+    };
+
+    for (int i = 0; i < 7; ++i) {
+        if (glIsEnabled(lamps[i].id)) {
+            glPushMatrix();
+            glDisable(GL_LIGHTING);
+            glDisable(GL_TEXTURE_2D);
+
+            glTranslatef(lamps[i].x, lamps[i].y, lamps[i].z);
+
+            glColor4f(lamps[i].r, lamps[i].g, lamps[i].b, 1.0f);
+            glutSolidSphere(1.0f, 16, 16);
+
+            glEnable(GL_LIGHTING);
+            glPopMatrix();
+        }
+    }
+
     // ============================
     // HUD (Informasi di layar 2D)
     // ============================
@@ -953,6 +1084,7 @@ void display() {
 
     glutSwapBuffers();
 }
+
 
 // ============================================================
 // SECTION 12: RESHAPE CALLBACK --- PROJECTION MATRIX (P) ---
@@ -999,12 +1131,51 @@ void keyboard(unsigned char key, int x, int y) {
     keyState[key] = true;
 
     switch (key) {
+        case '1':
+            if (glIsEnabled(GL_LIGHT1)) glDisable(GL_LIGHT1); else glEnable(GL_LIGHT1);
+            glutPostRedisplay();
+            break;
+        case '2':
+            if (glIsEnabled(GL_LIGHT2)) glDisable(GL_LIGHT2); else glEnable(GL_LIGHT2);
+            glutPostRedisplay();
+            break;
+        case '3':
+            if (glIsEnabled(GL_LIGHT3)) glDisable(GL_LIGHT3); else glEnable(GL_LIGHT3);
+            glutPostRedisplay();
+            break;
+        case '4':
+            if (glIsEnabled(GL_LIGHT4)) glDisable(GL_LIGHT4); else glEnable(GL_LIGHT4);
+            glutPostRedisplay();
+            break;
+        case '5':
+            if (glIsEnabled(GL_LIGHT5)) glDisable(GL_LIGHT5); else glEnable(GL_LIGHT5);
+            glutPostRedisplay();
+            break;
+        case '6':
+            if (glIsEnabled(GL_LIGHT6)) glDisable(GL_LIGHT6); else glEnable(GL_LIGHT6);
+            glutPostRedisplay();
+            break;
+        case '7':
+            if (glIsEnabled(GL_LIGHT7)) glDisable(GL_LIGHT7); else glEnable(GL_LIGHT7);
+            glutPostRedisplay();
+            break;
+
         case 27: // ESC -> keluar
             exit(0);
             break;
 
         case 'z': case 'Z':
             wireframeMode = !wireframeMode;
+            glutPostRedisplay();
+            break;
+
+        case 'b': case 'B':
+            isDayTime = !isDayTime;
+            if (isDayTime) {
+                glClearColor(0.53f, 0.81f, 0.92f, 1.0f); // Siang
+            } else {
+                glClearColor(0.18f, 0.18f, 0.22f, 1.0f); // Malam
+            }
             glutPostRedisplay();
             break;
 
@@ -1186,7 +1357,7 @@ void update(int value) {
         glutPostRedisplay();
     }
 
-    // Timer berikutnya (60 FPS target)
+    // Timer berikutnya
     glutTimerFunc(16, update, 0);
 }
 
@@ -1213,10 +1384,10 @@ int main(int argc, char** argv) {
     // MTL berisi material dan referensi texture
 
     std::cout << "========================================" << std::endl;
-    std::cout << " MEMUAT SCENE DARI BLENDER" << std::endl;
+    std::cout << " LOADING SCENE" << std::endl;
     std::cout << "========================================" << std::endl;
 
-    // Pastikan path menunjuk ke file OBJ yang sudah di-export dari Blender
+    // Path Obj
     // File MTL akan otomatis di-load melalui directive "mtllib" di dalam OBJ
     if (!loadOBJ("C:\\Users\\kevin\\Documents\\Grfk\\TRGrafkom\\object\\test.obj")) {
         std::cerr << "FATAL: Gagal memuat file OBJ!" << std::endl;
@@ -1228,7 +1399,7 @@ int main(int argc, char** argv) {
     buildSceneDisplayList();
 
     std::cout << "========================================" << std::endl;
-    std::cout << " SCENE SIAP! Gunakan mouse & WASD." << std::endl;
+    std::cout << " SCENE READY! Gunakan mouse & WASD." << std::endl;
     std::cout << "========================================" << std::endl;
 
     // ============================================================
